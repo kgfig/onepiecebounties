@@ -1,9 +1,10 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
-import unittest
 
-class HomePageTest(unittest.TestCase):
+class HomePageTest(LiveServerTestCase):
+    fixtures = ['pirates.yaml']
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -15,7 +16,7 @@ class HomePageTest(unittest.TestCase):
     def test_can_search_for_a_pirate_and_see_his_bounty(self):
         # The marines have put up an online billboard for pirate bounties.
         # Coby hears about this and goes to check it out.
-        self.browser.get('http://localhost:8000/onepiecebounties/')
+        self.browser.get(self.live_server_url + '/onepiecebounties/')
 
         # He notices the title read "WANTED | Unofficial list of bounties in One Piece"
         self.assertEqual('WANTED | Unofficial list of bounties in One Piece', self.browser.title)
@@ -56,8 +57,7 @@ class HomePageTest(unittest.TestCase):
         # As he was typing, the name "Monkey D. Luffy" shows up as the only suggestion in the list.
         time.sleep(3)
         suggestions = self.browser.find_elements_by_tag_name('option')
-        name_found = [True for pirate in suggestions if pirate.text == 'Monkey D. Luffy' ]
-        self.assertEqual(True, name_found, "Monkey D. Luffy not found in suggestions")
+        self.assertIn('Monkey D. Luffy', [pirate.get_attribute('value') for pirate in suggestions])
 
         # He presses down and hits Enter to select "Monkey D. Luffy".
         inputbox.send_keys(Keys.DOWN)
@@ -68,7 +68,7 @@ class HomePageTest(unittest.TestCase):
         self.assertEqual('Monkey D. Luffy', inputbox.get_attribute('value'))
 
         # Beside the field is a "Search" button, he clicks on it.
-        self.find_element_by_id('search').click()
+        self.browser.find_element_by_id('search').click()
         
         # The page changes.
         self.assertRegex('/onepiecebounties/(\w+)/', self.browser.current_url)
@@ -85,6 +85,3 @@ class HomePageTest(unittest.TestCase):
         
         # He realizes how far they've come in their chosen paths.
         # He leaves his computer to return to his post.
-
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')

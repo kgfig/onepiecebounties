@@ -1,0 +1,12 @@
+- model: bounties.pirate
+  pk: 1
+  fields:
+    name: Monkey D. Luffy
+- model: bounties.pirate
+  pk: 2
+  fields:
+    name: Iron Mace Alvida
+- model: bounties.pirate
+  pk: 3
+  fields:
+    name: Red-Haired Shanks

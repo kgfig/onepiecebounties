@@ -22,7 +22,7 @@ class HomePageTest(TestCase):
         luffy.save()
         alvida = Pirate(name='Iron Mace Alvida')
         alvida.save()
-        shanks = Pirate(name='Red-Hair Shanks')
+        shanks = Pirate(name='Red-Haired Shanks')
         shanks.save()
         
         response = self.client.get('/onepiecebounties/')
@@ -37,7 +37,7 @@ class HomePageTest(TestCase):
         luffy.save()
         alvida = Pirate(name='Iron Mace Alvida')
         alvida.save()
-        shanks = Pirate(name='Red-Hair Shanks')
+        shanks = Pirate(name='Red-Haired Shanks')
         shanks.save()
         
         response = self.client.get('/onepiecebounties/')
