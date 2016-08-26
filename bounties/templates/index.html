@@ -6,8 +6,8 @@
 	<h1>WANTED</h1>
 	<input type="search" placeholder="Search for a pirate" list="pirate-names"/>
 	<datalist id="pirate-names">
-		{% for pirate_name in pirates %}
-			<option value="{{ pirate_name }}">{{ pirate_name }}</option>
+		{% for pirate in pirates %}
+			<option value="{{ pirate.name }}">{{ pirate.name }}</option>
 		{% endfor %}
 	</datalist>
 </body>

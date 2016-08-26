@@ -21,5 +21,14 @@ class HomePageTest(TestCase):
                    {'name': 'Monkey D. Luffy'},
                    ]
         response = self.client.get('/onepiecebounties/')
-        self.assertEqual(response.context['pirates'], pirates, 'Context does not contain required data')
+        self.assertEqual(response.context['pirates'], pirates)
         
+    def test_display_correct_names_in_suggestions(self):
+        pirates = [{'name': 'Iron Mace Alvida'},
+                   {'name': 'Monkey D. Luffy'},
+                   ]
+        response = self.client.get('/onepiecebounties/')
+        
+        self.assertContains(response, pirates[0]['name'])
+        self.assertContains(response, pirates[1]['name'])
+        self.assertNotContains(response, "{'name':")
