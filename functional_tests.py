@@ -27,19 +27,37 @@ class HomePageTest(unittest.TestCase):
         # Near the top of the page just below the header are a search field
         # which invites him to search for a pirate
         inputbox = self.browser.find_element_by_tag_name('input')
-        self.assertEqual('search-field', inputbox.id)
-        self.assertEqual(
-            'Search for a pirate', inputbox.get_attribute('placeholder')
-        )
+        self.assertEqual('search', inputbox.get_attribute('type'))
+        self.assertEqual('Search for a pirate', inputbox.get_attribute('placeholder'))
+        self.assertEqual('pirate-names', inputbox.get_attribute('list'))
 
-        # He remembers his old friend and types "Luffy" in the search field.
+        # His past quickly flashes back.
+        # He types the name of his former captain from when he was still a pirate.
+        inputbox.send_keys('Alvida')
+
+        # As he was typing, the name "Iron Mace Alvida" shows up in the suggestions.
+        time.sleep(3)
+        suggestion_list = self.browser.find_element_by_tag_name('datalist')
+        self.assertEqual('pirate-names', suggestion_list.get_attribute('id'))
+        self.assertIsNotNone(suggestion_list, 'No datalist found for input')
+        suggestion_options = self.browser.find_element_by_tag_name('option')
+        self.assertIsNotNone(suggestion_options, 'No options for datalist element')
+        
+        suggestions = self.browser.find_elements_by_tag_name('option')
+        self.assertIsNotNone(suggestions)
+        self.assertIn('Iron Mace Alvida', [pirate.get_attribute('value') for pirate in suggestions])
+
+        # He stops before he could finish the search.
+        # He remembers his old friend who freed him and inspired him to pursue his dream of becoming a marine.
+        # He clears the search field and types "Luffy" instead.
+        inputbox.clear()
         inputbox.send_keys('Luffy')
 
         # As he was typing, the name "Monkey D. Luffy" shows up as the only suggestion in the list.
         time.sleep(3)
         suggestions = self.browser.find_elements_by_tag_name('option')
-        name_found = [True for suggested_name in suggestions if pirate_name == 'Monkey D. Luffy' ]
-        self.assertEqual(True, name_found)
+        name_found = [True for pirate in suggestions if pirate.text == 'Monkey D. Luffy' ]
+        self.assertEqual(True, name_found, "Monkey D. Luffy not found in suggestions")
 
         # He presses down and hits Enter to select "Monkey D. Luffy".
         inputbox.send_keys(Keys.DOWN)
