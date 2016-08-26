@@ -1,6 +1,7 @@
 from django.core.urlresolvers import resolve
 from django.test import TestCase
 from .views import index
+from .models import Pirate
 
 class HomePageTest(TestCase):
 
@@ -32,3 +33,22 @@ class HomePageTest(TestCase):
         self.assertContains(response, pirates[0]['name'])
         self.assertContains(response, pirates[1]['name'])
         self.assertNotContains(response, "{'name':")
+
+    def test_save_and_retrieve_pirates(self):
+        luffy = Pirate(name='Monkey D. Luffy')
+        luffy.save()
+        
+        first = Pirate.objects.first()
+        self.assertEqual(first.name, luffy.name)
+        
+    def test_save_and_retrieve_multiple_pirates(self):
+        luffy = Pirate(name='Monkey D. Luffy')
+        luffy.save()
+        
+        alvida = Pirate(name='Iron Mace Alvida')
+        alvida.save()
+
+        pirates = Pirate.objects.all()
+        self.assertEqual(pirates.count(), 2)
+
+
