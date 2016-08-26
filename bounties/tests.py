@@ -16,6 +16,10 @@ class HomePageTest(TestCase):
         response = self.client.get('/onepiecebounties/')
         self.assertEqual(response.status_code, 200)
 
-    def test_suggests_name_in_search_field(self):
+    def test_view_passes_correct_context_to_template(self):
+        pirates = [{'name': 'Iron Mace Alvida'},
+                   {'name': 'Monkey D. Luffy'},
+                   ]
         response = self.client.get('/onepiecebounties/')
-        self.assertContains(response, '<option value="Iron Mace Alvida">Iron Mace Alvida</option>')
+        self.assertEqual(response.context['pirates'], pirates, 'Context does not contain required data')
+        
