@@ -53,7 +53,7 @@ class HomePageTest(unittest.TestCase):
         self.find_element_by_id('search').click()
         
         # The page changes.
-        self.assertRegex('/onepiecebounties/pirates/(\d+)/', self.browser.current_url)
+        self.assertRegex('/onepiecebounties/(\w+)/', self.browser.current_url)
 
         # He sees the name, photo and bounty of ONLY his friend on the page.
         luffy_name = self.browser.find_element_by_class_name('name').text
