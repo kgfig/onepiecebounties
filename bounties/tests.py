@@ -18,21 +18,16 @@ class HomePageTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_view_passes_correct_context_to_template(self):
-        pirates = [{'name': 'Iron Mace Alvida'},
-                   {'name': 'Monkey D. Luffy'},
-                   ]
-        response = self.client.get('/onepiecebounties/')
-        self.assertEqual(response.context['pirates'], pirates)
+        luffy = Pirate(name='Monkey D. Luffy')
+        luffy.save()
+        alvida = Pirate(name='Iron Mace Alvida')
+        alvida.save()
         
-    def test_display_correct_names_in_suggestions(self):
-        pirates = [{'name': 'Iron Mace Alvida'},
-                   {'name': 'Monkey D. Luffy'},
-                   ]
         response = self.client.get('/onepiecebounties/')
+        context = response.context['pirates']
         
-        self.assertContains(response, pirates[0]['name'])
-        self.assertContains(response, pirates[1]['name'])
-        self.assertNotContains(response, "{'name':")
+        self.assertEqual(context.get(id=1), luffy)
+        self.assertEqual(context.get(id=2), alvida)
 
     def test_save_and_retrieve_pirates(self):
         luffy = Pirate(name='Monkey D. Luffy')
@@ -50,5 +45,3 @@ class HomePageTest(TestCase):
 
         pirates = Pirate.objects.all()
         self.assertEqual(pirates.count(), 2)
-
-
