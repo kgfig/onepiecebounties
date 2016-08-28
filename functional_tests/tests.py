@@ -30,6 +30,7 @@ class HomePageTest(LiveServerTestCase):
         inputbox = self.browser.find_element_by_tag_name('input')
         self.assertEqual('search', inputbox.get_attribute('type'))
         self.assertEqual('Search for a pirate', inputbox.get_attribute('placeholder'))
+        self.assertEqual('pirate-search-field', inputbox.get_attribute('name'))
         self.assertEqual('pirate-names', inputbox.get_attribute('list'))
 
         # His past quickly flashes back.
@@ -68,7 +69,7 @@ class HomePageTest(LiveServerTestCase):
         self.assertEqual('Monkey D. Luffy', inputbox.get_attribute('value'))
 
         # Beside the field is a "Search" button, he clicks on it.
-        self.browser.find_element_by_id('search').click()
+        self.browser.find_element_by_id('search-button').click()
         
         # The page changes.
         self.assertRegex('/onepiecebounties/(\w+)/', self.browser.current_url)

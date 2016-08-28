@@ -45,6 +45,7 @@ class HomePageTest(TestCase):
         self.assertContains(response, alvida.name)
         self.assertContains(response, shanks.name)
 
+
 class PirateModelTest(TestCase):
 
     def test_model_save_and_retrieve_pirates(self):
@@ -64,3 +65,4 @@ class PirateModelTest(TestCase):
         pirates = Pirate.objects.all()
         self.assertEqual(pirates.count(), 2)
 
+    
