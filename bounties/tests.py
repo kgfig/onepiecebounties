@@ -168,3 +168,9 @@ class GetPirateTest(TestCase):
         response = self.client.get('/onepiecebounties/%d/' % (luffy.id,))
         self.assertTemplateUsed(response, 'profile.html')
 
+    def test_view_shows_pirate_bounty(self):
+        luffy = Pirate(name='Monkey D. Luffy', bounty=500000000)
+        luffy.save()
+        formatted_bounty = '{:,}'.format(luffy.bounty)
+        response = self.client.get('/onepiecebounties/%d/' % (luffy.id,))
+        self.assertContains(response, formatted_bounty)
