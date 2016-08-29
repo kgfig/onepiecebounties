@@ -1,3 +1,7 @@
 Django==1.8
+factory-boy==2.7.0
+fake-factory==0.6.0
+python-dateutil==2.5.3
 PyYAML==3.11
 selenium==2.53.6
+six==1.10.0

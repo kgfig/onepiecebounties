@@ -2,13 +2,17 @@ from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
+from bounties import factories
 
 class HomePageTest(LiveServerTestCase):
-    fixtures = ['pirates.yaml']
 
     def setUp(self):
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
+        strawhat = factories.Crew()
+        factories.Pirate(crew=strawhat)
+        factories.Pirate(name='Iron Mace Alvida')
+        factories.Pirate(name='God Usopp', bounty=200000000, crew=strawhat)
 
     def tearDown(self):
         self.browser.quit()
