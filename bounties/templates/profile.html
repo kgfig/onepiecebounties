@@ -15,6 +15,6 @@
 	<h2 class="name">{{ pirate.name }}</h2>
 	<p class="bounty">{{ pirate.bounty|intcomma }}</p>
 	<p class="crew">{{ pirate.crew.name }}</p>
-	<img src="{{ pirate.filename }}" alt="{{ pirate.name }}"/>
+	<img src="{% static 'images/pirates/monkey-d-luffy.png' %}" /> <!--TODO use pirate.filename() in img src -->
 </body>
 </html>

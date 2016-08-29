@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.urlresolvers import resolve, reverse
 from django.test import TestCase
 from django.template.defaultfilters import slugify
@@ -161,3 +162,12 @@ class GetPirateTest(TestCase):
         response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
         pirate_context = response.context['pirate']
         self.assertEqual(pirate_context, pirate)
+
+    # TODO Find a way to do this
+    #def test_view_image_url_is_accessible(self):
+    #    pirate = factories.Pirate()
+    #    # TODO get static url using a better way
+    #    image_url = '%simages/pirates/%s%s' % (settings.STATIC_URL, pirate.filename(), ".png",)
+    #    response = self.client.get(image_url)
+    #    print(image_url)
+    #    self.assertEqual(response.status_code, 200)

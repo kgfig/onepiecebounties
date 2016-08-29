@@ -1,10 +1,10 @@
-from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
 from bounties import factories
 
-class HomePageTest(LiveServerTestCase):
+class HomePageTest(StaticLiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -104,7 +104,6 @@ class HomePageTest(LiveServerTestCase):
         luffy_image = self.browser.find_element_by_tag_name('img')
         image_src = luffy_image.get_attribute('src')
         self.assertTrue('monkey-d-luffy' in image_src)
-        # TODO check if src is actually works
 
         # He realizes how far his friend has come since that heartbreaking incident at Marineford.
         # He was glad to see him again in high spirits with a crew that he can always count on.
@@ -130,4 +129,4 @@ class HomePageTest(LiveServerTestCase):
         self.assertRegex(self.browser.current_url, '/onepiecebounties/')
 
         # He sees the links to the names of each Straw Hat Crew member.
-        
+        self.fail('Continue this some other time')        
