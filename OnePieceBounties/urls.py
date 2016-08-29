@@ -6,6 +6,6 @@ urlpatterns = [
     # Examples:
     # url(r'^$', 'OnePieceBounties.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-    url(r'^onepiecebounties/', include(bounties_urls)),
+    url(r'^onepiecebounties/', include(bounties_urls, namespace='bounties')),
     # url(r'^admin/', include(admin.site.urls)),
 ]
