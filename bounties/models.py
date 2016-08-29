@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import slugify
 
 class Crew(models.Model):
     name = models.CharField(max_length=128)
@@ -10,6 +11,9 @@ class Pirate(models.Model):
     name = models.CharField(max_length=128)
     bounty = models.IntegerField(null=True)
     crew = models.ForeignKey(Crew, on_delete=models.SET_NULL, blank=True, null=True)
+
+    def filename(self):
+        return slugify(self.name)
 
     def __str__(self):
         return self.name

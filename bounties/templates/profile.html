@@ -1,4 +1,5 @@
 {% load humanize %}
+{% load static %}
 
 <!DOCTYPE html>
 <html>
@@ -7,11 +8,13 @@
 </head>
 <body>
 	<h1>WANTED</h1>
-	<input type="search" placeholder="Search for a pirate" name='pirate-search-field' list='pirate-names'/>
-	<input type="button" id="search-button" />
-	<br/>
+	<input type="search" placeholder="Search for a pirate" name="pirate-search-field" list="pirate-names"/>
+	<input type="button" id="search-button" value="Search"/>
+	<datalist id="pirate-names">
+	</datalist>
 	<h2 class="name">{{ pirate.name }}</h2>
 	<p class="bounty">{{ pirate.bounty|intcomma }}</p>
 	<p class="crew">{{ pirate.crew.name }}</p>
+	<img src="{{ pirate.filename }}" alt="{{ pirate.name }}"/>
 </body>
 </html>

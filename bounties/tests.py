@@ -1,5 +1,6 @@
 from django.core.urlresolvers import resolve, reverse
 from django.test import TestCase
+from django.template.defaultfilters import slugify
 from . import factories, views
 from .models import Crew, Pirate
 
@@ -46,6 +47,11 @@ class PirateModelTest(TestCase):
         hancock = factories.Pirate(name='Boa Hancock', bounty=None, crew=None)
         result = Pirate.objects.filter(name__icontains='Boa')
         self.assertEqual(result.count(), 1)
+
+    def test_model_should_return_slugified_name_as_filename(self):
+        pirate = factories.Pirate()
+        correct_filename = slugify(pirate.name)
+        self.assertEqual(pirate.filename(), correct_filename)
 
 class IndexPageTest(TestCase):
 

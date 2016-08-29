@@ -10,9 +10,17 @@ class HomePageTest(LiveServerTestCase):
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
         strawhat = factories.Crew()
+        alvida_crew = factories.Crew(name='Alvida Pirates')
         factories.Pirate(crew=strawhat)
-        factories.Pirate(name='Iron Mace Alvida')
+        factories.Pirate(name='Iron Mace Alvida', crew=alvida_crew)
         factories.Pirate(name='God Usopp', bounty=200000000, crew=strawhat)
+        factories.Pirate(name='Tony Tony Chopper', bounty=100, crew=strawhat)
+        factories.Pirate(name='Roronoa Zoro', bounty=320000000, crew=strawhat)
+        factories.Pirate(name='Sanji', bounty=177000000, crew=strawhat)
+        factories.Pirate(name='Nico Robin', bounty=130000000, crew=strawhat)
+        factories.Pirate(name='Cyborg Franky', bounty=94000000, crew=strawhat)
+        factories.Pirate(name='Nami', bounty=66000000, crew=strawhat)
+        factories.Pirate(name='Soul King', bounty=83000000, crew=strawhat)
 
     def tearDown(self):
         self.browser.quit()
@@ -83,7 +91,7 @@ class HomePageTest(LiveServerTestCase):
         # The page changes.
         self.assertRegex(self.browser.current_url, '/onepiecebounties/\d+/')
 
-        # He sees the name, photo and bounty of ONLY his friend on the page.
+        # He sees the name, bounty, the crew name and photo of his friend on the page.
         luffy_name = self.browser.find_element_by_class_name('name').text
         self.assertEqual('Monkey D. Luffy', luffy_name)
 
@@ -93,19 +101,33 @@ class HomePageTest(LiveServerTestCase):
         luffy_crew = self.browser.find_element_by_class_name('crew').text
         self.assertEqual('Straw Hat Crew', luffy_crew)
 
-        # He realizes how far they've come in their chosen paths.
-        # He leaves his computer to return to his post.
+        luffy_image = self.browser.find_element_by_tag_name('img')
+        image_src = luffy_image.get_attribute('src')
+        self.assertTrue('monkey-d-luffy' in image_src)
+        # TODO check if src is actually works
 
-        # The huge title "WANTED" is still seen on top of the page.
+        # He realizes how far his friend has come since that heartbreaking incident at Marineford.
+        # He was glad to see him again in high spirits with a crew that he can always count on.
+        
+        # He notices that the huge title "WANTED" is still on top of the page.
         profile_header = self.browser.find_element_by_tag_name('h1')
         self._check_header_text(profile_header)
 
-        # Below the header are the search field and search button from before.
+        # Near the top-right corner of the page are a search field and a button.
         profile_inputbox = self.browser.find_element_by_tag_name('input')
         self._check_search_field_attributes(profile_inputbox)
         profile_search_button = self.browser.find_element_by_id('search-button');
-        self.assertIsNotNone(profile_search_button)
+        self.assertEqual(profile_search_button.get_attribute('value'), 'Search')
 
         profile_datalist = self.browser.find_element_by_tag_name('datalist')
         profile_options = self.browser.find_elements_by_tag_name('option')
         self._check_datalist_exists(profile_datalist, profile_options)
+
+        # He decides to search for Luffy' crewmates and types "Straw Hat" in the search field.
+        profile_inputbox.send_keys('Straw Hat')
+
+        # The page updates.
+        self.assertRegex(self.browser.current_url, '/onepiecebounties/')
+
+        # He sees the links to the names of each Straw Hat Crew member.
+        
