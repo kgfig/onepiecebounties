@@ -1,3 +1,7 @@
+- model: bounties.Crew
+  pk: 1
+  fields:
+    name: Straw Hat Crew
 - model: bounties.pirate
   pk: 1
   fields:

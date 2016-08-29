@@ -1,24 +1,45 @@
 from django.core.urlresolvers import resolve
 from django.test import TestCase
 from .views import index
-from .models import Pirate
+from .models import Crew, Pirate
+
+class CrewModelTest(TestCase):
+
+    def test_model_save_and_retrieve_crew(self):
+        crew = Crew(name='Straw Hat Crew')
+        crew.save()
+        
+        result = Crew.objects.first()
+        self.assertEqual(result, crew)
 
 class PirateModelTest(TestCase):
 
-    def test_model_save_and_retrieve_pirates(self):
-        luffy = Pirate(name='Monkey D. Luffy')
-        luffy.save()
+    def test_model_save_and_retrieve_pirate_without_bounty(self):
+        big_mom = Pirate(name='Charlotte Linlin')
+        big_mom.save()
         
         first = Pirate.objects.first()
-        self.assertEqual(first.name, luffy.name)
+        self.assertEqual(first, big_mom)
         
-    def test_model_can_save_pirate_bounty(self):
+    def test_model_save_and_retrieve_pirate_bounty(self):
         luffy = Pirate(name='Monkey D. Luffy', bounty=500000000)
         luffy.save()
+        
         first = Pirate.objects.first()
         self.assertEqual(first.bounty, luffy.bounty)
 
-    def test_model_can_search_pirate_whose_name_exactly_matches_keyword(self):
+    def test_model_save_and_retrieve_pirate_with_crew(self):
+        strawhat = Crew(name='Straw Hat Crew')
+        strawhat.save()
+        
+        luffy = Pirate(name='Monkey D. Luffy', bounty=500000000)
+        luffy.crew = strawhat
+        luffy.save()
+
+        result = Pirate.objects.first()
+        self.assertEqual(result.crew, strawhat)
+
+    def test_model_search_pirate_whose_name_exactly_matches_keyword(self):
         luffy = Pirate(name='Monkey D. Luffy')
         luffy.save()
         
@@ -174,3 +195,22 @@ class GetPirateTest(TestCase):
         formatted_bounty = '{:,}'.format(luffy.bounty)
         response = self.client.get('/onepiecebounties/%d/' % (luffy.id,))
         self.assertContains(response, formatted_bounty)
+
+    def test_view_shows_pirate_crew(self):
+        strawhat = Crew(name='Straw Hat Crew')
+        strawhat.save()
+        luffy = Pirate(name='Monkey D. Luffy', bounty=500000000, crew=strawhat)
+        luffy.save()
+
+        response = self.client.get('/onepiecebounties/%d/' % (luffy.id,))
+        self.assertContains(response, strawhat.name)
+
+    def test_view_passes_complete_pirate_context_to_template(self):
+        crew = Crew(name='Heart Pirates')
+        crew.save()
+        pirate = Pirate(name='Trafalgar D. Law', bounty=500000000, crew=crew)
+        pirate .save()
+
+        response = self.client.get('/onepiecebounties/%d/' % (pirate.id,))
+        pirate_context = response.context['pirate']
+        self.assertEqual(pirate_context, pirate)
