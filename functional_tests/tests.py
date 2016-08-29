@@ -13,6 +13,20 @@ class HomePageTest(LiveServerTestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def _check_header_text(self, header, expected_header_text='WANTED'):
+        self.assertEqual(expected_header_text, header.text)
+
+    def _check_search_field_attributes(self, inputbox, input_type='search', placeholder_text='Search for a pirate', input_name='pirate-search-field', input_list='pirate-names'):
+        self.assertEqual(input_type, inputbox.get_attribute('type'))
+        self.assertEqual(placeholder_text, inputbox.get_attribute('placeholder'))
+        self.assertEqual(input_name, inputbox.get_attribute('name'))
+        self.assertEqual(input_list, inputbox.get_attribute('list'))
+
+    def _check_datalist_exists(self, datalist, datalist_options):
+        self.assertEqual('pirate-names', datalist.get_attribute('id'))
+        self.assertIsNotNone(datalist, 'No datalist found for input')
+        self.assertIsNotNone(datalist_options, 'No options for datalist element')
+
     def test_can_search_for_a_pirate_and_see_his_bounty(self):
         # The marines have put up an online billboard for pirate bounties.
         # Coby hears about this and goes to check it out.
@@ -22,16 +36,13 @@ class HomePageTest(LiveServerTestCase):
         self.assertEqual('WANTED | Unofficial list of bounties in One Piece', self.browser.title)
         
         # and huge header read "WANTED" on the home page.
-        header_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertEqual('WANTED', header_text)
+        header = self.browser.find_element_by_tag_name('h1')
+        self._check_header_text(header)
                   
-        # Near the top of the page just below the header are a search field
-        # which invites him to search for a pirate
+        # Near the top of the page just below the header is a search field
+        # which invites him to search for a pirate.
         inputbox = self.browser.find_element_by_tag_name('input')
-        self.assertEqual('search', inputbox.get_attribute('type'))
-        self.assertEqual('Search for a pirate', inputbox.get_attribute('placeholder'))
-        self.assertEqual('pirate-search-field', inputbox.get_attribute('name'))
-        self.assertEqual('pirate-names', inputbox.get_attribute('list'))
+        self._check_search_field_attributes(inputbox)
 
         # His past quickly flashes back.
         # He types the name of his former captain from when he was still a pirate.
@@ -39,15 +50,10 @@ class HomePageTest(LiveServerTestCase):
 
         # As he was typing, the name "Iron Mace Alvida" shows up in the suggestions.
         time.sleep(3)
-        suggestion_list = self.browser.find_element_by_tag_name('datalist')
-        self.assertEqual('pirate-names', suggestion_list.get_attribute('id'))
-        self.assertIsNotNone(suggestion_list, 'No datalist found for input')
-        suggestion_options = self.browser.find_element_by_tag_name('option')
-        self.assertIsNotNone(suggestion_options, 'No options for datalist element')
-        
-        suggestions = self.browser.find_elements_by_tag_name('option')
-        self.assertIsNotNone(suggestions)
-        self.assertIn('Iron Mace Alvida', [pirate.get_attribute('value') for pirate in suggestions])
+        home_datalist = self.browser.find_element_by_tag_name('datalist')
+        home_suggestions = self.browser.find_elements_by_tag_name('option')
+        self._check_datalist_exists(home_datalist, home_suggestions)
+        self.assertIn('Iron Mace Alvida', [pirate.get_attribute('value') for pirate in home_suggestions])
 
         # He stops before he could finish the search.
         # He remembers his old friend who freed him and inspired him to pursue his dream of becoming a marine.
@@ -57,8 +63,7 @@ class HomePageTest(LiveServerTestCase):
 
         # As he was typing, the name "Monkey D. Luffy" shows up as the only suggestion in the list.
         time.sleep(3)
-        suggestions = self.browser.find_elements_by_tag_name('option')
-        self.assertIn('Monkey D. Luffy', [pirate.get_attribute('value') for pirate in suggestions])
+        self.assertIn('Monkey D. Luffy', [pirate.get_attribute('value') for pirate in home_suggestions])
 
         # He presses down and hits Enter to select "Monkey D. Luffy".
         inputbox.send_keys(Keys.DOWN)
@@ -72,17 +77,31 @@ class HomePageTest(LiveServerTestCase):
         self.browser.find_element_by_id('search-button').click()
         
         # The page changes.
-        self.assertRegex('/onepiecebounties/(\w+)/', self.browser.current_url)
+        self.assertRegex(self.browser.current_url, '/onepiecebounties/\d+/')
 
         # He sees the name, photo and bounty of ONLY his friend on the page.
         luffy_name = self.browser.find_element_by_class_name('name').text
         self.assertEqual('Monkey D. Luffy', luffy_name)
 
-        luffy_crew = self.browser.find_element_by_class_name('crew').text
-        self.assertEqual('Straw Hat Crew', luffy_crew)
-
         luffy_bounty = self.browser.find_element_by_class_name('bounty').text
         self.assertEqual('500,000,000', luffy_bounty)
         
+        luffy_crew = self.browser.find_element_by_class_name('crew').text
+        self.assertEqual('Straw Hat Crew', luffy_crew)
+
         # He realizes how far they've come in their chosen paths.
         # He leaves his computer to return to his post.
+
+        # The huge title "WANTED" is still seen on top of the page.
+        profile_header = self.browser.find_element_by_tag_name('h1')
+        self._check_header_text(profile_header)
+
+        # Below the header are the search field and search button from before.
+        profile_inputbox = self.browser.find_element_by_tag_name('input')
+        self._check_search_field_attributes(profile_inputbox)
+        profile_search_button = self.browser.find_element_by_id('search-button');
+        self.assertIsNotNone(profile_search_button)
+
+        profile_datalist = self.browser.find_element_by_tag_name('datalist')
+        profile_options = self.browser.find_elements_by_tag_name('option')
+        self._check_datalist_exists(profile_datalist, profile_options)
