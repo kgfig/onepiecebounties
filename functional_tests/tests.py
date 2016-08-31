@@ -38,7 +38,41 @@ class BountiesTest(StaticLiveServerTestCase):
         self.assertEqual(input_name, inputbox.get_attribute('name'))
         self.assertEqual(input_list, inputbox.get_attribute('list'))
 
-    def _check_datalist_exists(self, datalist, datalist_options):
+    def _check_autocomplete_options(self, options, pirate):
+        self.assertIn(pirate.name, [option.get_attribute('value') for option in options])
+        
+    def _check_pirate_data_in_profile_page_elements(self, pirate):
+        name_element = self.browser.find_element_by_class_name('name')
+        self.assertEqual(pirate.name, name_element.text)
+
+        bounty_element = self.browser.find_element_by_class_name('bounty')
+        self.assertEqual('{:,}'.format(pirate.bounty), bounty_element.text)
+        
+        crew_element = self.browser.find_element_by_class_name('crew')
+        self.assertEqual(pirate.crew.name, crew_element.text)
+
+        image_element = self.browser.find_element_by_tag_name('img')
+        image_src = image_element.get_attribute('src')
+        self.assertTrue(pirate.filename() in image_src)
+
+    def _check_search_results_elements(self, pirate):
+        name_link = self.browser.find_element_by_link_text(pirate.name)
+        name_href = name_link.get_attribute('href')
+        self.assertEqual(self.browser.live_server_url + '/onepiecebounties/%d/' % (pirate.id,), name_href)
+        
+        bounty_element = self.browser.find_element_by_class_name('bounty')
+        self.assertEqual('{:,}'.format(pirate.bounty), bounty_element.text)
+        
+        crew_element = self.browser.find_element_by_class_name('crew')
+        self.assertEqual(pirate.crew.name, crew_element.text)
+
+        image_element = self.browser.find_element_by_tag_name('img')
+        image_src = image_element.get_attribute('src')
+        self.assertTrue(pirate.filename() in image_src)
+        
+    def _check_datalist_exists(self, datalist=None, datalist_options=None):
+        datalist = datalist if datalist else self.browser.find_element_by_tag_name('datalist')
+        datalist_options = datalist_options if datalist_options else self.browser.find_elements_by_tag_name('option')
         self.assertEqual('pirate-names', datalist.get_attribute('id'))
         self.assertIsNotNone(datalist, 'No datalist found for input')
         self.assertIsNotNone(datalist_options, 'No options for datalist element')
@@ -67,9 +101,9 @@ class BountiesTest(StaticLiveServerTestCase):
         # As he was typing, the name "Iron Mace Alvida" shows up in the suggestions.
         time.sleep(3)
         home_datalist = self.browser.find_element_by_tag_name('datalist')
-        home_suggestions = self.browser.find_elements_by_tag_name('option')
-        self._check_datalist_exists(home_datalist, home_suggestions)
-        self.assertIn(self.alvida.name, [pirate.get_attribute('value') for pirate in home_suggestions])
+        home_options = self.browser.find_elements_by_tag_name('option')
+        self._check_datalist_exists(home_datalist, home_options)
+        self._check_autocomplete_options(home_options, self.alvida)
 
         # He stops before he could finish the search.
         # He remembers his old friend who freed him and inspired him to pursue his dream of becoming a marine.
@@ -79,7 +113,7 @@ class BountiesTest(StaticLiveServerTestCase):
 
         # As he was typing, the name "Monkey D. Luffy" shows up as the only suggestion in the list.
         time.sleep(3)
-        self.assertIn(self.luffy.name, [pirate.get_attribute('value') for pirate in home_suggestions])
+        self._check_autocomplete_options(home_options, self.luffy)
 
         # He presses down and hits Enter to select "Monkey D. Luffy".
         inputbox.send_keys(Keys.DOWN)
@@ -96,19 +130,7 @@ class BountiesTest(StaticLiveServerTestCase):
         self.assertRegex(self.browser.current_url, '/onepiecebounties/\d+/')
 
         # He sees the name, bounty, the crew name and photo of his friend on the page.
-        # TODO: extract checking of content in the pirate's profile page to a private method
-        luffy_name = self.browser.find_element_by_class_name('name').text
-        self.assertEqual(self.luffy.name, luffy_name)
-
-        luffy_bounty = self.browser.find_element_by_class_name('bounty').text
-        self.assertEqual('{:,}'.format(self.luffy.bounty), luffy_bounty)
-        
-        luffy_crew = self.browser.find_element_by_class_name('crew').text
-        self.assertEqual(self.luffy.crew.name, luffy_crew)
-
-        luffy_image = self.browser.find_element_by_tag_name('img')
-        image_src = luffy_image.get_attribute('src')
-        self.assertTrue(self.luffy.filename() in image_src)
+        self._check_pirate_data_in_profile_page_elements(self.luffy)
 
         # He notices that the huge title "WANTED" is still on top of the page.
         profile_header = self.browser.find_element_by_tag_name('h1')
@@ -117,12 +139,13 @@ class BountiesTest(StaticLiveServerTestCase):
         # Near the top-right corner of the page are a search field and a button.
         profile_inputbox = self.browser.find_element_by_tag_name('input')
         self._check_search_field_attributes(profile_inputbox)
+        
         profile_search_button = self.browser.find_element_by_id('search-button');
         self.assertEqual(profile_search_button.get_attribute('value'), 'Search')
 
         profile_datalist = self.browser.find_element_by_tag_name('datalist')
         profile_options = self.browser.find_elements_by_tag_name('option')
-        self._check_datalist_exists(profile_datalist, profile_options)
+        self._check_datalist_exists()
 
         # Rumors say that since that fateful day at Marineford,
         # Luffy spent the next 2 years in the island of women under Boa Hancock's protection.
@@ -132,9 +155,9 @@ class BountiesTest(StaticLiveServerTestCase):
         # TODO/NOTE: Should this be tested? How?
         # See the pirates in the suggestions.
         time.sleep(3)
-        self.assertIn(self.hancock.name, [pirate.get_attribute('value') for pirate in profile_options])
-        self.assertIn(self.sandersonia.name, [pirate.get_attribute('value') for pirate in profile_options])
-        self.assertIn(self.marigold.name, [pirate.get_attribute('value') for pirate in profile_options])
+        self._check_autocomplete_options(profile_options, self.hancock)
+        self._check_autocomplete_options(profile_options, self.sandersonia)
+        self._check_autocomplete_options(profile_options, self.marigold)
         
         # He presses enter.
         profile_inputbox.send_keys(Keys.ENTER)
@@ -143,28 +166,21 @@ class BountiesTest(StaticLiveServerTestCase):
         self.assertRegex(self.browser.current_url, '/onepiecebounties/')
 
         # The page shows the crew name, photos and names of the 3 Boa sisters.
-        
         # He notices that the names are actually links.
-        hancock_link = self.browser.find_element_by_link_text(self.hancock.name)
-        self.assertEqual(self.browser.live_server_url + '/onepiecebounties/%d/' % (self.hancock.id,), hancock_link.get_attribute('href'))
-
-        sandersonia_link = self.browser.find_element_by_link_text(self.sandersonia.name)
-        self.assertEqual(self.browser.live_server_url + '/onepiecebounties/%d/' % (self.sandersonia.id,), sandersonia_link.get_attribute('href'))
-
-        marigold_link = self.browser.find_element_by_link_text(self.marigold.name)
-        self.assertEqual(self.browser.live_server_url + '/onepiecebounties/%d/' % (self.marigold.id,), marigold_link.get_attribute('href'))
+        self._check_search_results_elements(self.hancock)
+        self._check_search_results_elements(self.sandersonia)
+        self._check_search_results_elements(self.marigold)
 
         # He clicks on Boa Hancock's name.
         hancock_link.click()
 
         # The page updates.
-        self.assertRegex(self.browser.current_url, '/onepiecebounties/\d+/')
-        # NOTE: Or this?
         self.assertEqual(self.browser.current_url, self.browser.live_server_url + '/onepiecebounties/%s/' % (self.hancock.id,))
 
         # He sees her information on the page.
+        self._check_pirate_data_in_profile_page_elements(self.hancock)
 
-        # His curiosity now satisfied, he leaves the computer and returns to his post.
+        # Curiosity now satisfied, Coby leaves the computer and goes to sleep.
         
         ## Intro for a user story that will be pushed down to the bottom of the priority list:
         ## He realizes how far his friend has come since that heartbreaking incident at Marineford.
