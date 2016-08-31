@@ -50,8 +50,6 @@ class GetPirateTest(TestCase):
         list_context = response.context['pirates']
         self.assertIn(hancock, list_context)
 
-        
-
     # TODO Find a way to do this
     #def test_view_image_url_is_accessible(self):
     #    pirate = factories.Pirate()

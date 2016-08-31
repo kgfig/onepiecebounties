@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>WANTED | Unofficial list of bounties in One Piece</title>
-</head>
-<body>
-	{% for pirate in pirates %}
-	<a href="/onepiecebounties/{{ pirate.id }}/">{{ pirate.name }}</a>
-	{% endfor %}
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block main %}
+
+{% for pirate in pirates %}
+<a href="/onepiecebounties/{{ pirate.id }}/">{{ pirate.name }}</a>
+{% endfor %}
+
+{% endblock %}

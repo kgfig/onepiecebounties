@@ -56,9 +56,10 @@ class BountiesTest(StaticLiveServerTestCase):
         self.assertTrue(pirate.filename() in image_src)
 
     def _check_search_results_elements(self, pirate):
-        name_link = self.browser.find_element_by_link_text(pirate.name)
+        name_link = self.browser.find_element_by_link_text('Boa Hancock')
         name_href = name_link.get_attribute('href')
-        self.assertEqual(self.browser.live_server_url + '/onepiecebounties/%d/' % (pirate.id,), name_href)
+        pirate_url = '/onepiecebounties/%d+/' % (pirate.id,)
+        self.assertRegex(name_href, pirate_url)
         
         bounty_element = self.browser.find_element_by_class_name('bounty')
         self.assertEqual('{:,}'.format(pirate.bounty), bounty_element.text)
@@ -175,7 +176,8 @@ class BountiesTest(StaticLiveServerTestCase):
         hancock_link.click()
 
         # The page updates.
-        self.assertEqual(self.browser.current_url, self.browser.live_server_url + '/onepiecebounties/%s/' % (self.hancock.id,))
+        new_profile_url = '/onepiecebounties/%d/' % (self.hancock.id,)
+        self.assertRegex(self.browser.current_url, new_profile_url)
 
         # He sees her information on the page.
         self._check_pirate_data_in_profile_page_elements(self.hancock)

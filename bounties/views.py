@@ -14,7 +14,7 @@ def index(request):
             return redirect('/onepiecebounties/%d/' % (results.first().id,))
         elif results.count() > 1:
             return render(request, 'list.html', {'pirates': results})
-    
+        
     return render(request, 'index.html', {'pirates' : pirates})
 
 def get_pirate(request, pirate_id):
