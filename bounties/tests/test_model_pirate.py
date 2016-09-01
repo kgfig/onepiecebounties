@@ -46,3 +46,8 @@ class PirateModelTest(TestCase):
         pirate = factories.Pirate()
         correct_filename = slugify(pirate.name)
         self.assertEqual(pirate.filename(), correct_filename)
+
+    def test_model_returns_formatted_bounty_with_comma(self):
+        pirate = factories.Pirate(bounty=500000000)
+        formatted_bounty = '500,000,000'
+        self.assertEqual(pirate.formatted_bounty(), formatted_bounty)

@@ -1,9 +1,18 @@
 {% extends "base.html" %}
 
+{% load humanize %}
+{% load static %}
+
 {% block main %}
 
 {% for pirate in pirates %}
-<a href="/onepiecebounties/{{ pirate.id }}/">{{ pirate.name }}</a>
+
+	<a href="/onepiecebounties/{{ pirate.id }}/">{{ pirate.name }}</a>
+
+	{% if pirate.bounty %}
+		<p class="bounty">{{ pirate.bounty|intcomma }}</p>
+	{% endif %}
+
 {% endfor %}
 
 {% endblock %}

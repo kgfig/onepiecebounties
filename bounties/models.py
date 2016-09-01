@@ -15,5 +15,8 @@ class Pirate(models.Model):
     def filename(self):
         return slugify(self.name)
 
+    def formatted_bounty(self):
+        return '{:,}'.format(self.bounty)
+
     def __str__(self):
         return self.name

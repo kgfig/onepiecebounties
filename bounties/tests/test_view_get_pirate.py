@@ -26,9 +26,8 @@ class GetPirateTest(TestCase):
 
     def test_view_shows_pirate_bounty(self):
         pirate = factories.Pirate()
-        formatted_bounty = '{:,}'.format(pirate.bounty)
         response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
-        self.assertContains(response, formatted_bounty)
+        self.assertContains(response, pirate.formatted_bounty())
 
     def test_view_shows_pirate_crew(self):
         crew = factories.Crew()
@@ -50,6 +49,16 @@ class GetPirateTest(TestCase):
         list_context = response.context['pirates']
         self.assertIn(hancock, list_context)
 
+    def test_template_has_correct_pirate_image(self):
+        pirate = factories.Pirate(bounty=500000000)
+        response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
+        self.assertContains(response, pirate.filename())
+
+    def test_template_does_not_show_bounty_if_pirate_has_no_bounty(self):
+        no_bounty_pirate = factories.Pirate(bounty=None)
+        response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': no_bounty_pirate.id,}))
+        self.assertNotContains(response, '<p class="bounty">', html=True)
+                               
     # TODO Find a way to do this
     #def test_view_image_url_is_accessible(self):
     #    pirate = factories.Pirate()

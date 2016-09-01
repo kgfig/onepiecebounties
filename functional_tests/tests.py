@@ -55,21 +55,40 @@ class BountiesTest(StaticLiveServerTestCase):
         image_src = image_element.get_attribute('src')
         self.assertTrue(pirate.filename() in image_src)
 
-    def _check_search_results_elements(self, pirate):
-        name_link = self.browser.find_element_by_link_text('Boa Hancock')
+    def _check_search_result_name_links(self, pirate):
+        name_link = self.browser.find_element_by_link_text(pirate.name)
         name_href = name_link.get_attribute('href')
         pirate_url = '/onepiecebounties/%d+/' % (pirate.id,)
         self.assertRegex(name_href, pirate_url)
         
-        bounty_element = self.browser.find_element_by_class_name('bounty')
-        self.assertEqual('{:,}'.format(pirate.bounty), bounty_element.text)
-        
-        crew_element = self.browser.find_element_by_class_name('crew')
-        self.assertEqual(pirate.crew.name, crew_element.text)
+    def _check_search_result_bounty_class(self, pirate):
+            bounty_elements = self.browser.find_elements_by_class_name('bounty')
+            self.assertIn('{:,}'.format(pirate.bounty), [element.text for element in bounty_elements])
 
-        image_element = self.browser.find_element_by_tag_name('img')
-        image_src = image_element.get_attribute('src')
-        self.assertTrue(pirate.filename() in image_src)
+    def _check_search_result_crew_class(self, pirate):
+        crew_elements = self.browser.find_elements_by_class_name('crew')
+        self.assertIn(pirate.crew.name, [element.text for element in crew_elements])
+
+    # TODO improve code in asserting that the filename can be matched
+    # (using regex) in one of the image elements' src attribute
+    def _check_search_result_image_tags(self, pirate):
+        image_elements = self.browser.find_elements_by_tag_name('image')
+        matched = False
+        exp = re.compile(r'/' + pirate.filename() +'/')
+        
+        for image in image_elements:
+            matched = True if exp.match(image.get_attribute('src')) else False
+        
+        assertTrue(matched)
+
+    def _check_search_results_elements(self, pirate):
+        self._check_search_result_name_links(pirate)
+        
+        if pirate.bounty:
+            self._check_search_result_bounty_class(pirate)
+
+        self._check_search_result_crew_class(pirate)
+        self._check_search_result_image_tags(pirate)
         
     def _check_datalist_exists(self, datalist=None, datalist_options=None):
         datalist = datalist if datalist else self.browser.find_element_by_tag_name('datalist')
