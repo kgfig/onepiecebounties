@@ -1,8 +1,9 @@
+from bounties import factories
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
-from bounties import factories
+import re
 
 class BountiesTest(StaticLiveServerTestCase):
 
@@ -45,11 +46,8 @@ class BountiesTest(StaticLiveServerTestCase):
         name_element = self.browser.find_element_by_class_name('name')
         self.assertEqual(pirate.name, name_element.text)
 
-        bounty_element = self.browser.find_element_by_class_name('bounty')
-        self.assertEqual('{:,}'.format(pirate.bounty), bounty_element.text)
-        
-        crew_element = self.browser.find_element_by_class_name('crew')
-        self.assertEqual(pirate.crew.name, crew_element.text)
+        self._check_search_result_bounty_class(pirate)
+        self._check_search_result_crew_class(pirate)
 
         image_element = self.browser.find_element_by_tag_name('img')
         image_src = image_element.get_attribute('src')
@@ -62,6 +60,7 @@ class BountiesTest(StaticLiveServerTestCase):
         self.assertRegex(name_href, pirate_url)
         
     def _check_search_result_bounty_class(self, pirate):
+        if pirate.bounty:
             bounty_elements = self.browser.find_elements_by_class_name('bounty')
             self.assertIn('{:,}'.format(pirate.bounty), [element.text for element in bounty_elements])
 
@@ -72,24 +71,47 @@ class BountiesTest(StaticLiveServerTestCase):
     # TODO improve code in asserting that the filename can be matched
     # (using regex) in one of the image elements' src attribute
     def _check_search_result_image_tags(self, pirate):
-        image_elements = self.browser.find_elements_by_tag_name('image')
+        image_elements = self.browser.find_elements_by_tag_name('img')
         matched = False
-        exp = re.compile(r'/' + pirate.filename() +'/')
-        
+        pattern = '.*/static/images/pirates/' + pirate.filename() + '.png'
+        exp = re.compile(pattern)
+
         for image in image_elements:
-            matched = True if exp.match(image.get_attribute('src')) else False
-        
-        assertTrue(matched)
+            if exp.match(image.get_attribute('src')):
+                matched = True
+                break
+            
+        self.assertTrue(matched, 'Pirate filename %s not found in %s' % (pattern, image.get_attribute('src'),))
 
-    def _check_search_results_elements(self, pirate):
-        self._check_search_result_name_links(pirate)
-        
-        if pirate.bounty:
+    # If there are N pirates who should be in the search results
+    # where M of them have bounties and P of them belong to a crew,
+    # there should be:
+    # N name links
+    # M bounty elements,
+    # N images
+    # and P crew elements.
+    def _check_list_in_search_results(self, pirates):
+        len_pirates = len(pirates)
+        name_links = self.browser.find_elements_by_class_name('name')
+        self.assertEqual(len(name_links), len_pirates)
+
+        pirates_with_bounty = [ some_pirate for some_pirate in pirates if some_pirate.bounty ]
+        bounty_elements = self.browser.find_elements_by_class_name('bounty') 
+        self.assertEqual(len(bounty_elements), len(pirates_with_bounty))
+
+        pirates_with_crew = [ some_pirate for some_pirate in pirates if some_pirate.crew ]
+        crew_elements = self.browser.find_elements_by_class_name('crew')
+        self.assertEqual(len(crew_elements), len(pirates_with_crew))
+
+        poster_elements = self.browser.find_elements_by_class_name('poster')
+        self.assertEqual(len(poster_elements), len_pirates)
+
+        for pirate in pirates:
+            self._check_search_result_name_links(pirate)
             self._check_search_result_bounty_class(pirate)
+            self._check_search_result_crew_class(pirate)
+            self._check_search_result_image_tags(pirate)
 
-        self._check_search_result_crew_class(pirate)
-        self._check_search_result_image_tags(pirate)
-        
     def _check_datalist_exists(self, datalist=None, datalist_options=None):
         datalist = datalist if datalist else self.browser.find_element_by_tag_name('datalist')
         datalist_options = datalist_options if datalist_options else self.browser.find_elements_by_tag_name('option')
@@ -187,12 +209,10 @@ class BountiesTest(StaticLiveServerTestCase):
 
         # The page shows the crew name, photos and names of the 3 Boa sisters.
         # He notices that the names are actually links.
-        self._check_search_results_elements(self.hancock)
-        self._check_search_results_elements(self.sandersonia)
-        self._check_search_results_elements(self.marigold)
+        self._check_list_in_search_results([self.hancock, self.sandersonia, self.marigold])
 
         # He clicks on Boa Hancock's name.
-        hancock_link.click()
+        self.browser.find_element_by_link_text(self.    hancock.name).click()
 
         # The page updates.
         new_profile_url = '/onepiecebounties/%d/' % (self.hancock.id,)

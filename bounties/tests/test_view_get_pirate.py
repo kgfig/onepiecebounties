@@ -24,17 +24,6 @@ class GetPirateTest(TestCase):
         response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
         self.assertTemplateUsed(response, 'profile.html')
 
-    def test_view_shows_pirate_bounty(self):
-        pirate = factories.Pirate()
-        response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
-        self.assertContains(response, pirate.formatted_bounty())
-
-    def test_view_shows_pirate_crew(self):
-        crew = factories.Crew()
-        pirate = factories.Pirate(crew=crew)
-        response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
-        self.assertContains(response, crew.name)
-
     def test_view_passes_complete_pirate_context_to_template(self):
         crew = factories.Crew(name='Heart Pirates')
         pirate = factories.Pirate(name='Trafalgar D. Law', bounty=500000000, crew=crew)
@@ -49,10 +38,26 @@ class GetPirateTest(TestCase):
         list_context = response.context['pirates']
         self.assertIn(hancock, list_context)
 
+    def test_view_shows_pirate_bounty(self):
+        pirate = factories.Pirate()
+        response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
+        self.assertContains(response, pirate.formatted_bounty())
+
+    def test_view_shows_pirate_crew(self):
+        crew = factories.Crew()
+        pirate = factories.Pirate(crew=crew)
+        response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
+        self.assertContains(response, crew.name)
+
     def test_template_has_correct_pirate_image(self):
-        pirate = factories.Pirate(bounty=500000000)
+        pirate = factories.Pirate()
+        other_pirate = factories.Pirate(name='Tony Tony Chopper', bounty=100)
+        
         response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
         self.assertContains(response, pirate.filename())
+
+        new_response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': other_pirate.id,}))
+        self.assertContains(new_response, other_pirate.filename())
 
     def test_template_does_not_show_bounty_if_pirate_has_no_bounty(self):
         no_bounty_pirate = factories.Pirate(bounty=None)

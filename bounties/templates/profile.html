@@ -12,6 +12,6 @@
 {% endif %}
 
 <p class="crew">{{ pirate.crew.name }}</p>
-<img src="{% static 'images/pirates/monkey-d-luffy.png' %}" /> <!--TODO use pirate.filename() in img src -->
+<img src="/static/images/pirates/{{ pirate.filename }}.png" />
 
 {% endblock %}

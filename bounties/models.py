@@ -16,7 +16,7 @@ class Pirate(models.Model):
         return slugify(self.name)
 
     def formatted_bounty(self):
-        return '{:,}'.format(self.bounty)
+        return '{:,}'.format(self.bounty) if self.bounty else None
 
     def __str__(self):
         return self.name
