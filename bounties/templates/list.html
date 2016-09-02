@@ -3,6 +3,8 @@
 {% load humanize %}
 {% load static %}
 
+{% block search_css_file %}default-search{% endblock %}
+
 {% block main %}
 
 {% for pirate in pirates %}
@@ -10,8 +12,10 @@
 		<img src="/static/images/pirates/{{ pirate.filename }}.png" />
 	</div>
 
-	<h2>
-		{{ pirate.get_wanted_status_display }}
+	<h2 class="wanted-status">
+		{% if pirate.wanted_status %}
+			{{ pirate.get_wanted_status_display }}
+		{% endif %}
 	</h2>
 
 	<h3 class="name">
@@ -19,7 +23,7 @@
 	</h3>
 
 	<p class="crew">{{ pirate.crew.name }}</p>
-	
+
 	{% if pirate.bounty %}
 		<p class="bounty">{{ pirate.bounty|intcomma }}</p>
 	{% endif %}

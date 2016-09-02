@@ -3,13 +3,19 @@
 {% load humanize %}
 {% load static %}
 
+{% block search_css_file %}default-search{% endblock %}
+
 {% block main %}
 
 <div class="poster">
 	<img src="/static/images/pirates/{{ pirate.filename }}.png" />
 </div>
 
-<h2 class="wanted-status">{{ pirate.get_wanted_status_display }}</h2>
+<h2 class="wanted-status">
+	{% if pirate.wanted_status %}
+		{{ pirate.get_wanted_status_display }}
+	{% endif %}
+</h2>
 
 <h3 class="name">{{ pirate.name }}</h3>
 
