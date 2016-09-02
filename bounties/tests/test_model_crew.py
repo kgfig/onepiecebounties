@@ -7,6 +7,10 @@ from bounties.models import Crew, Pirate
 
 class CrewModelTest(TestCase):
 
+    def test_str_should_return_name(self):
+        crew = Crew(name='Whitebeard Pirates')
+        self.assertEqual(crew.__str__(), crew.name)
+
     def test_model_save_and_retrieve_crew(self):
         crew = factories.Crew()
         result = Crew.objects.first()

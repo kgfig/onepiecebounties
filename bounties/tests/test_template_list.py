@@ -35,14 +35,6 @@ class ListTemplateTest(TestCase):
         response = self.client.get(reverse('bounties:index'), data={'pirate-search-field':'Boa'})
         self.assertContains(response, crew.name)
 
-    def test_shows_crew_of_matching_pirates(self):
-        crew = factories.Crew(name='Kuja Pirates')
-        hancock = factories.Pirate(name='Boa Hancock', bounty=None, crew=crew)
-        marigold = factories.Pirate(name='Boa Marigold', bounty=None, crew=crew)
-        
-        response = self.client.get(reverse('bounties:index'), data={'pirate-search-field':'Boa'})
-        self.assertContains(response, crew.name)
-
     def test_shows_bounty_of_matching_pirates(self):
         whitebeard = factories.Crew(name='Whitebeard Pirates')
         luffy = factories.Pirate(bounty=500000000)
