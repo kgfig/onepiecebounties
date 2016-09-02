@@ -6,18 +6,24 @@
 {% block main %}
 
 {% for pirate in pirates %}
-	<h2 class="name">
-		<a href="/onepiecebounties/{{ pirate.id }}/">{{ pirate.name }}</a>
+	<div class="poster">
+		<img src="/static/images/pirates/{{ pirate.filename }}.png" />
+	</div>
+
+	<h2>
+		{{ pirate.get_wanted_status_display }}
 	</h2>
+
+	<h3 class="name">
+		<a href="/onepiecebounties/{{ pirate.id }}/">{{ pirate.name }}</a>
+	</h3>
+
+	<p class="crew">{{ pirate.crew.name }}</p>
+	
 	{% if pirate.bounty %}
 		<p class="bounty">{{ pirate.bounty|intcomma }}</p>
 	{% endif %}
 
-	<p class="crew">{{ pirate.crew.name }}</p>
-
-	<div class="poster">
-		<img src="/static/images/pirates/{{ pirate.filename }}.png" />
-	</div>
 
 {% endfor %}
 

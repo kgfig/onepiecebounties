@@ -38,12 +38,12 @@ class GetPirateTest(TestCase):
         list_context = response.context['pirates']
         self.assertIn(hancock, list_context)
 
-    def test_view_shows_pirate_bounty(self):
+    def test_template_shows_pirate_bounty(self):
         pirate = factories.Pirate()
         response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
         self.assertContains(response, pirate.formatted_bounty())
 
-    def test_view_shows_pirate_crew(self):
+    def test_template_shows_pirate_crew(self):
         crew = factories.Crew()
         pirate = factories.Pirate(crew=crew)
         response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
@@ -63,7 +63,12 @@ class GetPirateTest(TestCase):
         no_bounty_pirate = factories.Pirate(bounty=None)
         response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': no_bounty_pirate.id,}))
         self.assertNotContains(response, '<p class="bounty">', html=True)
-                               
+
+    def test_template_shows_wanted_status(self):
+        pirate = factories.Pirate(wanted_status=Pirate.DEAD_OR_ALIVE)
+        response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
+        self.assertContains(response, pirate.get_wanted_status_display())
+    
     # TODO Find a way to do this
     #def test_view_image_url_is_accessible(self):
     #    pirate = factories.Pirate()

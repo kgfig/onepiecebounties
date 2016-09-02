@@ -60,3 +60,12 @@ class ListTemplateTest(TestCase):
         marigold_url = static('images/pirates/%s.png' % (marigold.filename(),))
         self.assertContains(response, hancock_url)
         self.assertContains(response, marigold_url)
+
+    def test_shows_wanted_status_of_matching_pirates(self):
+        crew = factories.Crew()
+        luffy = factories.Pirate(name='Test Luffy', wanted_status=Pirate.DEAD_OR_ALIVE)
+        sanji = factories.Pirate(name='Test Sanji', bounty=177000000, crew=crew, wanted_status=Pirate.ONLY_ALIVE)
+
+        response = self.client.get(reverse('bounties:index'), data={'pirate-search-field': 'Test'})
+        self.assertContains(response, luffy.get_wanted_status_display())
+        self.assertContains(response, sanji.get_wanted_status_display())

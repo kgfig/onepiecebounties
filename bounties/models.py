@@ -19,7 +19,7 @@ class Pirate(models.Model):
     name = models.CharField(max_length=128)
     bounty = models.IntegerField(null=True)
     crew = models.ForeignKey(Crew, on_delete=models.SET_NULL, blank=True, null=True)
-    wanted_status = models.IntegerField(choices=STATUS_CHOICES, default=DEAD_OR_ALIVE)
+    wanted_status = models.IntegerField(choices=STATUS_CHOICES, default=DEAD_OR_ALIVE, null=True)
 
     def filename(self):
         return slugify(self.name)

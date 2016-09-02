@@ -1,4 +1,5 @@
 from bounties import factories
+from bounties.models import Pirate
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -18,14 +19,14 @@ class BountiesTest(StaticLiveServerTestCase):
         factories.Pirate(name='God Usopp', bounty=200000000, crew=strawhat)
         factories.Pirate(name='Chopper', bounty=100, crew=strawhat)
         factories.Pirate(name='Roronoa Zoro', bounty=320000000, crew=strawhat)
-        factories.Pirate(name='Sanji', bounty=177000000, crew=strawhat, wanted_status='Only Alive')
+        factories.Pirate(name='Sanji', bounty=177000000, crew=strawhat, wanted_status=Pirate.ONLY_ALIVE)
         factories.Pirate(name='Nico Robin', bounty=130000000, crew=strawhat)
         factories.Pirate(name='Franky', bounty=94000000, crew=strawhat)
         factories.Pirate(name='Nami', bounty=66000000, crew=strawhat)
         factories.Pirate(name='Soul King', bounty=83000000, crew=strawhat)
-        self.hancock = factories.Pirate(name='Boa Hancock', bounty=None, crew=kuja)
-        self.sandersonia = factories.Pirate(name='Boa Sandersonia', bounty=None, crew=kuja)
-        self.marigold = factories.Pirate(name='Boa Marigold', bounty=None, crew=kuja)
+        self.hancock = factories.Pirate(name='Boa Hancock', bounty=None, crew=kuja, wanted_status=None)
+        self.sandersonia = factories.Pirate(name='Boa Sandersonia', bounty=None, crew=kuja, wanted_status=None)
+        self.marigold = factories.Pirate(name='Boa Marigold', bounty=None, crew=kuja, wanted_status=None)
 
     def tearDown(self):
         self.browser.quit()
@@ -55,8 +56,9 @@ class BountiesTest(StaticLiveServerTestCase):
         self.assertTrue(pirate.filename() in image_src)
 
     def _check_wanted_status(self, pirate):
-        status_elements = self.browser.find_elements_by_class_name('wanted-status')
-        self.assertIn(pirate.wanted_status, [element.text for element in status_elements])
+        if pirate.wanted_status:
+            status_elements = self.browser.find_elements_by_class_name('wanted-status')
+            self.assertIn(pirate.get_wanted_status_display(), [element.text for element in status_elements])
         
     def _check_search_result_name_links(self, pirate):
         name_link = self.browser.find_element_by_link_text(pirate.name)
