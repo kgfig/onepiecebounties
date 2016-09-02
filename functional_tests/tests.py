@@ -16,11 +16,11 @@ class BountiesTest(StaticLiveServerTestCase):
         self.luffy = factories.Pirate(crew=strawhat)
         self.alvida = factories.Pirate(name='Iron Mace Alvida', crew=alvida_crew)
         factories.Pirate(name='God Usopp', bounty=200000000, crew=strawhat)
-        factories.Pirate(name='Tony Tony Chopper', bounty=100, crew=strawhat)
+        factories.Pirate(name='Chopper', bounty=100, crew=strawhat)
         factories.Pirate(name='Roronoa Zoro', bounty=320000000, crew=strawhat)
-        factories.Pirate(name='Sanji', bounty=177000000, crew=strawhat)
+        factories.Pirate(name='Sanji', bounty=177000000, crew=strawhat, wanted_status='Only Alive')
         factories.Pirate(name='Nico Robin', bounty=130000000, crew=strawhat)
-        factories.Pirate(name='Cyborg Franky', bounty=94000000, crew=strawhat)
+        factories.Pirate(name='Franky', bounty=94000000, crew=strawhat)
         factories.Pirate(name='Nami', bounty=66000000, crew=strawhat)
         factories.Pirate(name='Soul King', bounty=83000000, crew=strawhat)
         self.hancock = factories.Pirate(name='Boa Hancock', bounty=None, crew=kuja)
@@ -41,18 +41,23 @@ class BountiesTest(StaticLiveServerTestCase):
 
     def _check_autocomplete_options(self, options, pirate):
         self.assertIn(pirate.name, [option.get_attribute('value') for option in options])
-        
+
     def _check_pirate_data_in_profile_page_elements(self, pirate):
         name_element = self.browser.find_element_by_class_name('name')
         self.assertEqual(pirate.name, name_element.text)
 
         self._check_search_result_bounty_class(pirate)
         self._check_search_result_crew_class(pirate)
+        self._check_wanted_status(pirate)
 
         image_element = self.browser.find_element_by_tag_name('img')
         image_src = image_element.get_attribute('src')
         self.assertTrue(pirate.filename() in image_src)
 
+    def _check_wanted_status(self, pirate):
+        status_elements = self.browser.find_elements_by_class_name('wanted-status')
+        self.assertIn(pirate.wanted_status, [element.text for element in status_elements])
+        
     def _check_search_result_name_links(self, pirate):
         name_link = self.browser.find_element_by_link_text(pirate.name)
         name_href = name_link.get_attribute('href')
@@ -110,6 +115,7 @@ class BountiesTest(StaticLiveServerTestCase):
             self._check_search_result_name_links(pirate)
             self._check_search_result_bounty_class(pirate)
             self._check_search_result_crew_class(pirate)
+            self._check_wanted_status(pirate)
             self._check_search_result_image_tags(pirate)
 
     def _check_datalist_exists(self, datalist=None, datalist_options=None):

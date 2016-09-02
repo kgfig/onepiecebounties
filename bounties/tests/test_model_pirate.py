@@ -59,3 +59,19 @@ class PirateModelTest(TestCase):
     def test_formatted_bounty_returns_None_if_no_bounty(self):
         pirate = factories.Pirate(bounty=None)
         self.assertIsNone(pirate.formatted_bounty())
+
+    def test_save_and_retrieve_wanted_status(self):
+        crew = factories.Crew()
+        pirate = factories.Pirate(crew=crew, wanted_status=Pirate.DEAD_OR_ALIVE)
+        result = Pirate.objects.first()
+        self.assertEqual(pirate.wanted_status, result.wanted_status)
+
+    def test_should_return_wanted_status_string(self):
+        crew = factories.Crew()
+        pirate = factories.Pirate(crew=crew, wanted_status=Pirate.ONLY_ALIVE)
+        result = Pirate.objects.first()
+        status_choices_dict = dict(Pirate.STATUS_CHOICES)
+        self.assertEqual(pirate.get_wanted_status_display(), status_choices_dict.get(Pirate.ONLY_ALIVE))
+        
+        
+                
