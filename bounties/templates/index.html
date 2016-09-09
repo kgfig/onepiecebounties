@@ -1,3 +1,12 @@
 {% extends "base.html" %}
 
-{% block search_css_file %}index-search{% endblock %}
+{% load staticfiles %}
+
+{% block css %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static "css/search-style.css" %}" />
+{% endblock %}
+
+{% block content %}
+	{% include "search.html" %}
+{% endblock %}

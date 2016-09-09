@@ -80,7 +80,7 @@ class BountiesTest(StaticLiveServerTestCase):
     def _check_search_result_image_tags(self, pirate):
         image_elements = self.browser.find_elements_by_tag_name('img')
         matched = False
-        pattern = '.*/static/images/pirates/' + pirate.filename() + '.png'
+        pattern = '.*/static/images/pirates/' + pirate.filename()
         exp = re.compile(pattern)
 
         for image in image_elements:

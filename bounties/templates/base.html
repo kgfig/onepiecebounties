@@ -1,14 +1,25 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
-	<title>WANTED | Unofficial list of bounties in One Piece</title>
-	<link rel="stylesheet" href="/static/bounties/css/vendor/bootstrap.min.css" />
-	<link rel="stylesheet" href="/static/bounties/css/style.css" />
-	<link rel="stylesheet" href="/static/bounties/css/{% block search_css_file %}{% endblock %}.css" />
-<body>
-	<h1>WANTED</h1>
-	{% include "search.html" %}
-	{% block main %}
+	<!-- Template structure from https://oncampus.oberlin.edu/webteam/2012/09/architecture-django-templates -->
+	{% block meta_tags %}{% endblock %}
+	<title>
+		{% block title %}WANTED | Unofficial list of bounties in One Piece{% endblock %}
+	</title>
+	{% block css %}
+		<link rel="stylesheet" href="{% static "vendor/bootstrap/css/bootstrap.min.css" %}" />
+		<link rel="stylesheet" href="{% static "css/style.min.css" %}" />
 	{% endblock %}
+	{% block javascript %}{% endblock %}
+</head>
+<body>
+	<header>
+		{% block header %}<h1>WANTED</h1>{% endblock %}
+	</header>
+
+	<main role="main" class="container">
+		{% block content %}{% endblock %}
+	</main>
 </body>
 </html>

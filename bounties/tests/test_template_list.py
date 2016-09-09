@@ -56,8 +56,8 @@ class ListTemplateTest(TestCase):
         marigold = factories.Pirate(name='Boa Marigold', bounty=None, crew=None)
 
         response = self.client.get(reverse('bounties:index'), data={'pirate-search-field': 'Boa'})
-        hancock_url = static('images/pirates/%s.png' % (hancock.filename(),))
-        marigold_url = static('images/pirates/%s.png' % (marigold.filename(),))
+        hancock_url = static('images/pirates/%s' % (hancock.filename(),))
+        marigold_url = static('images/pirates/%s' % (marigold.filename(),))
         self.assertContains(response, hancock_url)
         self.assertContains(response, marigold_url)
 

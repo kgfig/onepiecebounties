@@ -1,29 +1,32 @@
 {% extends "base.html" %}
 
 {% load humanize %}
-{% load static %}
+{% load staticfiles %}
 
-{% block search_css_file %}default-search{% endblock %}
-
-{% block main %}
-
-<div class="poster">
-	<img src="/static/images/pirates/{{ pirate.filename }}.png" />
-</div>
-
-<h2 class="wanted-status">
-	{% if pirate.wanted_status %}
-		{{ pirate.get_wanted_status_display }}
-	{% endif %}
-</h2>
-
-<h3 class="name">{{ pirate.name }}</h3>
-
-<p class="crew">{{ pirate.crew.name }}</p>
-
-{% if pirate.bounty %}
-	<p class="bounty">{{ pirate.bounty|intcomma }}</p>
-{% endif %}
-
-
+{% block css %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static "css/default-search.css" %}" />
 {% endblock %}
+
+{% block content %}
+	{% include "search.html" %}
+
+	<div class="poster">
+		<img src="/static/images/pirates/{{ pirate.filename }}.jpg" />
+	</div>
+
+	<h2 class="wanted-status">
+		{% if pirate.wanted_status %}
+			{{ pirate.get_wanted_status_display }}
+		{% endif %}
+	</h2>
+
+	<h3 class="name">{{ pirate.name }}</h3>
+
+	<p class="crew">{{ pirate.crew.name }}</p>
+
+	{% if pirate.bounty %}
+		<p class="bounty">{{ pirate.bounty|intcomma }}</p>
+	{% endif %}
+
+{% endblock content %}
