@@ -4,9 +4,13 @@
 
 {% block css %}
 	{{ block.super }}
-	<link rel="stylesheet" href="{% static "css/search-style.css" %}" />
+	<link rel="stylesheet" href="{% static "css/index-search.css" %}" />
 {% endblock %}
 
 {% block content %}
-	{% include "search.html" %}
+	<div class="row">
+		<div class="col-md-offset-2 col-md-8">
+			{% include "search.html" %}
+		</div>
+	</div>
 {% endblock %}

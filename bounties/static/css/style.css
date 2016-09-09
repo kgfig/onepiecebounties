@@ -1,0 +1,49 @@
+body {
+	background: #d5cbbb;
+	font-size: 10px;
+	font-family: 'Vani';
+}
+
+header > h1 {
+	font-weight: bold;
+	color: #322826;
+	font-size: 16em;
+}
+
+.name {
+	font-family: 'Vani';
+	font-weight: bold;
+}
+
+.bounty {
+	font-family: 'Verdana';
+	font-weight: normal;
+}
+
+input[type="search"] {
+	border: 0px;
+	border-bottom: 2px solid #39302d;
+	background: none;
+	font-weight: normal;
+}
+
+input[type="submit"].btn-search {
+	background: #615a59;
+	border-radius: 1px;
+	color: #ebe5dd;
+	border: 2px solid #615a59;
+}
+
+input[type="submit"].btn-search:hover {
+	color: #615a59;
+	background: #ebe5dd;
+}
+
+/* http://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+ .flexme{
+      display: -webkit-box;
+      display: -moz-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+}     
