@@ -1,5 +1,5 @@
 <form method="GET" action="/onepiecebounties/" class="search-panel">
-	<div>
+	<div class="form-group">
 		<input type="search" placeholder="Search for a pirate..." name="pirate-search-field" list="pirate-names"/>
 		<datalist id="pirate-names">
 			{% for pirate in pirates %}
@@ -7,7 +7,5 @@
 			{% endfor %}
 		</datalist>
 	</div>
-	<div>
-		<input type="submit" id="search-button" class="btn btn-search" value="Search" />
-	</div>
+	<input type="submit" id="search-button" class="btn btn-search" value="Search" />
 </form>

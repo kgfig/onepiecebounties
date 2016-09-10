@@ -1,0 +1,78 @@
+header > h1 {
+	text-align: center;
+	font-size: 10em;
+	margin-top: 2%;
+	margin-bottom: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/* Search */
+
+input[type="search"] {
+	text-align: center;
+	font-size: 1.6em;
+	color: #322826;
+	padding-top: 10px;
+}
+
+input[type="submit"].btn-search {
+	text-align: center;
+	padding: 8px 20px 2px 20px;
+	margin: 0 7px;
+}
+
+/* detail and list */
+
+.pirate-detail {}
+
+.detail-text {
+	box-sizing: border-box;
+	margin: 0 auto;
+	padding: 0;
+	max-width: 430px;
+	background-image: url("images/border-upper-left.png"),
+					  url("images/border-upper-right.png"),
+					  url("images/border-lower-right-reflect-left.png"),
+					  url("images/border-lower-left.png");
+	background-repeat: no-repeat;
+	background-position: left top, right top, right bottom, left bottom;
+}
+
+.name {
+	font-size: 4.25em;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.bounty {
+	font-size: 2.5em;
+	padding: 0;
+	margin: 0;
+	-webkit-transform:scale(1.0, 0.5);
+	-moz-transform:scale(1.0, 0.5);
+	-ms-transform:scale(1.0, 0.5);
+	-o-transform:scale(1.0, 0.5);
+	transform:scale(1.,0.75);
+}
+
+.bounty:before {
+	/*content: url("images/beli.png");*/
+}
+
+.wanted-status {
+	font-weight: normal;
+	font-size: 2.75em;
+	letter-spacing: 0.5em;
+	padding: 0;
+	margin-bottom: 0;
+}
+
+.poster {
+	max-width:400px;
+	height: auto;
+	margin-top: 0;
+	border: 2px solid ;
+	box-sizing: border-box;
+}

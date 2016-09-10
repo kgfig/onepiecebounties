@@ -2,6 +2,12 @@ body {
 	background: #d5cbbb;
 	font-size: 10px;
 	font-family: 'Vani';
+	overflow-x: none;
+}
+
+header  {
+	margin: 0;
+	padding: 0;
 }
 
 header > h1 {
@@ -23,8 +29,26 @@ header > h1 {
 input[type="search"] {
 	border: 0px;
 	border-bottom: 2px solid #39302d;
+	border-radius: 2px;
 	background: none;
 	font-weight: normal;
+	text-align: center;
+	width: 100%;
+	outline: none;
+}
+
+input[type="search"]:hover, 
+input[type="search"]:focus {
+	border: none;
+	border-bottom: 2px solid #39302d;
+	outline: none;
+}
+
+input[type="search"]::-webkit-input-placeholder, /* Chrome/Safari/Opera */
+input[type="search"]:-moz-placeholder, /* Firefox 18- */
+input[type="search"]::-moz-placeholder,  /* Firefox 19+ */
+input[type="search"]:-ms-input-placeholder {  
+color: red !important;
 }
 
 input[type="submit"].btn-search {
@@ -37,6 +61,14 @@ input[type="submit"].btn-search {
 input[type="submit"].btn-search:hover {
 	color: #615a59;
 	background: #ebe5dd;
+	-webkit-transition: all 0.30s ease-in-out;
+	-moz-transition: all 0.30s ease-in-out;
+	-ms-transition: all 0.30s ease-in-out;
+	-o-transition: all 0.30s ease-in-out;
+}
+
+nav.navbar {
+	background: none;
 }
 
 /* http://css-tricks.com/snippets/css/a-guide-to-flexbox/ */

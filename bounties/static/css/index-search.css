@@ -4,15 +4,14 @@ header > h1 {
 }
 
 input[type="search"] {
-	width: 100%;
-	text-align: center;
 	font-size: 2em;
 }
 
 input[type="submit"].btn-search {
 	font-size: 2em;
-	padding: 10px 40px 5px 40px;
+	padding: 10px 40px 3px 40px;
 	margin-top: 5%;
+	margin: 5% 0;
 	text-align: center;
 }
 

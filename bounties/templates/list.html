@@ -9,21 +9,35 @@
 {% endblock %}
 
 {% block content %}
-	{% for pirate in pirates %}
-		<div class="poster">
-			<img src="/static/images/pirates/{{ pirate.filename }}.jpg" />
+	<nav class="navbar navbar-default navbar-static-top" role="navigation">
+		<div class="container-fluid text-center navbar-form navbar-left">
+			{% include "search.html" %}
 		</div>
-		<h2 class="wanted-status">
-			{% if pirate.wanted_status %}
-				{{ pirate.get_wanted_status_display }}
+	</nav>
+
+	{% include "header.html" %}
+
+	<div class="row">
+		{% for pirate in pirates %}
+			<div class="col-md-3 text-center">
+				<img src="/static/images/pirates/{{ pirate.filename }}.jpg" class="poster"/>
+				<h2 class="wanted-status">
+					{% if pirate.wanted_status %}
+						{{ pirate.get_wanted_status_display|upper }}
+					{% endif %}
+				</h2>
+				<h3 class="name">
+					<a href="/onepiecebounties/{{ pirate.id }}/">{{ pirate.name }}</a>
+				</h3>
+				<p class="crew">{{ pirate.crew.name|upper }}</p>
+				{% if pirate.bounty %}
+					<p class="bounty">{{ pirate.bounty|intcomma }}</p>
+				{% endif %}
+			</div>
+			{% if forloop.counter|divisibleby:3 %}
+				</div>
+				<div class="row">
 			{% endif %}
-		</h2>
-		<h3 class="name">
-			<a href="/onepiecebounties/{{ pirate.id }}/">{{ pirate.name }}</a>
-		</h3>
-		<p class="crew">{{ pirate.crew.name }}</p>
-		{% if pirate.bounty %}
-			<p class="bounty">{{ pirate.bounty|intcomma }}</p>
-		{% endif %}
-	{% endfor %}
+		{% endfor %}
+	</div>
 {% endblock content %}

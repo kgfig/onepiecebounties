@@ -3,9 +3,13 @@
 <html>
 <head>
 	<!-- Template structure from https://oncampus.oberlin.edu/webteam/2012/09/architecture-django-templates -->
-	{% block meta_tags %}{% endblock %}
+	{% block meta_tags %}
+		  <meta name="viewport" content="width=device-width, initial-scale=1">
+	{% endblock %}
 	<title>
-		{% block title %}WANTED | Unofficial list of bounties in One Piece{% endblock %}
+		{% block title %}
+			WANTED | Unofficial list of bounties in One Piece
+		{% endblock %}
 	</title>
 	{% block css %}
 		<link rel="stylesheet" href="{% static "vendor/bootstrap/css/bootstrap.min.css" %}" />
@@ -15,11 +19,7 @@
 	{% block javascript %}{% endblock %}
 </head>
 <body>
-	<header>
-		{% block header %}<h1>WANTED</h1>{% endblock %}
-	</header>
-
-	<main role="main" class="container">
+	<main role="main">
 		{% block content %}{% endblock %}
 	</main>
 </body>
