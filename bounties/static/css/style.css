@@ -19,11 +19,19 @@ header > h1 {
 .name {
 	font-family: 'Vani';
 	font-weight: bold;
+	color: #322826;
+}
+
+.crew  {
+	font-family: 'Vani';
+	font-weight: regular;
+	color: #322826;
 }
 
 .bounty {
 	font-family: 'Verdana';
 	font-weight: normal;
+	color: #322826;
 }
 
 input[type="search"] {

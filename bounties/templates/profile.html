@@ -20,7 +20,7 @@
 	<div class="row">
 		<div class="col-md-offset-2 col-md-8 text-center pirate-detail">
 			<img src="/static/images/pirates/{{ pirate.filename }}.jpg" class="poster" />
-			<div class="detail-text">
+			<div class="detail-text solo">
 				<h2 class="wanted-status">
 					{% if pirate.wanted_status %}
 						{{ pirate.get_wanted_status_display|upper }}
