@@ -10,15 +10,16 @@
 
 {% block content %}
 	<nav class="navbar navbar-default navbar-static-top" role="navigation">
-		<div class="container-fluid text-center navbar-form navbar-left">
-			{% include "search.html" %}
+		<div class="container-fluid">
+			<div class="navbar-form navbar-left">
+				{% include "search.html" %}
+			</div>
 		</div>
 	</nav>
-
 	<div class="container">
 		{% include "header.html" %}
 		<div class="row">
-			<div class="col-md-offset-2 col-md-8 text-center pirate-detail">
+			<div class="col-lg-offset-2 col-sm-offset-1 col-lg-8 col-sm-10 text-center pirate-detail">
 				<img src="/static/images/pirates/{{ pirate.filename }}.jpg" class="poster" />
 				<div class="detail-text solo">
 					<h2 class="wanted-status">

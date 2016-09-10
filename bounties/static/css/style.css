@@ -1,8 +1,9 @@
+/* Set background and fonts */
+
 body {
 	background: #d5cbbb;
 	font-size: 10px;
 	font-family: 'Vani';
-	overflow-x: none;
 }
 
 header  {
@@ -10,7 +11,11 @@ header  {
 	padding: 0;
 }
 
-header > h1 {
+h1, h2, h3, h4, h5, h6 {
+	line-height: 1em;
+}
+
+header h1 {
 	font-weight: bold;
 	color: #322826;
 	font-size: 16em;
@@ -32,6 +37,44 @@ header > h1 {
 	font-family: 'Verdana';
 	font-weight: normal;
 	color: #322826;
+	margin: 0;
+}
+
+/* Reset border, margin and padding set by Bootstrap on form controls */
+
+.navbar, 
+.navbar-form {
+	outline: none;
+	border: 0;
+	background: none;
+	margin-bottom: 0;
+}
+
+.input-group {
+	margin: 0;
+	padding:0;
+}
+
+.input-group-addon {
+	margin: 0;
+	padding: 0;
+	background: none;
+}
+
+input.form-control,input.form-control:focus {
+    border:none;
+    box-shadow: none;
+   -webkit-box-shadow: none;
+   -moz-box-shadow: none;
+   -moz-transition: none;
+   -webkit-transition: none;
+   padding: 0;
+}
+
+/* Set common properties of search form elements */
+
+span.input-group-addon {
+	border-bottom: 2px solid #39302d;
 }
 
 input[type="search"] {
@@ -41,8 +84,9 @@ input[type="search"] {
 	background: none;
 	font-weight: normal;
 	text-align: center;
-	width: 100%;
+	width: 80%;
 	outline: none;
+	box-sizing: border;
 }
 
 input[type="search"]:hover, 
@@ -56,7 +100,7 @@ input[type="search"]::-webkit-input-placeholder, /* Chrome/Safari/Opera */
 input[type="search"]:-moz-placeholder, /* Firefox 18- */
 input[type="search"]::-moz-placeholder,  /* Firefox 19+ */
 input[type="search"]:-ms-input-placeholder {  
-color: red !important;
+color: white !important;
 }
 
 input[type="submit"].btn-search {
@@ -75,8 +119,145 @@ input[type="submit"].btn-search:hover {
 	-o-transition: all 0.30s ease-in-out;
 }
 
-nav.navbar {
-	background: none;
+
+/* Set properties of list and detail template elements */
+
+a, a:active {
+	text-decoration: none;
+	color: #322826;
+}
+
+a:hover {
+	text-decoration: none;
+	color: #322826;
+}
+
+.pirate-detail {
+	margin-bottom: 2.5%;
+}
+
+.detail-text {
+	box-sizing: border-box;
+	margin: 0 auto;
+	padding: 0;
+	background-image: url("images/border-upper-left.png"),
+					  url("images/border-upper-right.png"),
+					  url("images/border-lower-right-reflect-left.png"),
+					  url("images/border-lower-left.png");
+	background-repeat: no-repeat;
+	background-position: left top, right top, right bottom, left bottom;
+}
+
+.detail-text.solo {
+	max-width: 430px;
+}
+
+.name {
+	font-size: 4.25em;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.name.grid {
+	font-size: 3.5em;
+}
+
+.bounty {
+	font-size: 2.5em;
+	padding: 0;
+	margin: 0;
+	-webkit-transform:scale(1.0, 0.5);
+	-moz-transform:scale(1.0, 0.5);
+	-ms-transform:scale(1.0, 0.5);
+	-o-transform:scale(1.0, 0.5);
+	transform:scale(1.,0.75);
+}
+
+.bounty:before {
+	content: url("images/beli.png");
+}
+
+.wanted-status {
+	font-weight: normal;
+	font-size: 2.75em;
+	letter-spacing: 0.5em;
+	padding: 0;
+	margin-bottom: 0;
+}
+
+.wanted-status.grid {
+	letter-spacing: 0.3em;
+}
+
+.crew {
+	font-size: 2em;
+	margin: -.6em;
+	padding: 0;
+	letter-spacing: 0.5em;
+}
+
+.poster {
+	max-width:400px;
+	height: auto;
+	margin-top: 0;
+	border: 2px solid ;
+	box-sizing: border-box;
+}
+
+a  .poster.thumbnail {
+	max-width: 100%;
+	height: auto;
+	padding: 0;
+	opacity: 0.6;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+a:hover .poster.thumbnail {
+	opacity: 1;
+}
+
+
+/* Medium devices */
+
+@media only screen and (max-width: 768px) {
+
+.detail-text.solo {
+	max-width: 430px;
+}
+
+}
+
+/* Small devices */
+@media only screen and (max-width: 480px) {
+
+.wanted-status {
+	letter-spacing: 0.35em;
+}
+
+.name {
+	font-size: 3.75em;
+}
+
+.detail-text.solo {
+	
+}
+
+}
+
+/* Small devices: additional breakpoint */
+
+@media only screen and (max-width: 370px) {
+
+.wanted-status {
+	letter-spacing: 0.25em;
+}
+
+.name {
+	font-size: 3em;
+}
+
 }
 
 /* http://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
@@ -86,4 +267,5 @@ nav.navbar {
       display: -ms-flexbox;
       display: -webkit-flex;
       display: flex;
-}     
+}
+

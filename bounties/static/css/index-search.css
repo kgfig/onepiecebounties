@@ -1,6 +1,6 @@
-header > h1 {
+header h1 {
 	text-align: center;
-	margin-top: 12.5%;
+	margin-top: 16%;
 }
 
 input[type="search"] {
@@ -17,5 +17,30 @@ input[type="submit"].btn-search {
 
 .search-panel {
 	margin-top: 8%;
-	text-align: center;
+}
+
+@media only screen and (max-width: 768px) {
+
+header h1 {
+	font-size: 12em;
+}
+
+}
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (max-width : 480px) {
+
+header h1 {
+	font-size: 8em;
+}
+
+}
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (max-width : 320px) {
+
+header h1 {
+	font-size: 6em;
+}
+
 }

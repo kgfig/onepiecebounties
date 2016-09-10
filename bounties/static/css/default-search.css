@@ -1,4 +1,4 @@
-header > h1 {
+header h1 {
 	text-align: center;
 	font-size: 10em;
 	margin-top: 2%;
@@ -14,6 +14,8 @@ input[type="search"] {
 	font-size: 1.6em;
 	color: #322826;
 	padding-top: 10px;
+	margin-left: -1px;
+	margin-right: 20px;
 }
 
 input[type="submit"].btn-search {
@@ -22,90 +24,20 @@ input[type="submit"].btn-search {
 	margin: 0 7px;
 }
 
-/* detail and list */
+/* Extra Small Devices, Phones */ 
+@media only screen and (max-width : 480px) {
 
-a, a:active {
-	text-decoration: none;
-	color: #322826;
+header h1 {
+	font-size: 8em;
 }
 
-a:hover {
-	text-decoration: none;
-	color: #322826;
 }
 
-.detail-text {
-	box-sizing: border-box;
-	margin: 0 auto;
-	padding: 0;
-	background-image: url("images/border-upper-left.png"),
-					  url("images/border-upper-right.png"),
-					  url("images/border-lower-right-reflect-left.png"),
-					  url("images/border-lower-left.png");
-	background-repeat: no-repeat;
-	background-position: left top, right top, right bottom, left bottom;
+/* Extra Small Devices, Phones */ 
+@media only screen and (max-width : 320px) {
+
+header h1 {
+	font-size: 6em;
 }
 
-.detail-text.solo {
-	max-width: 430px;
-}
-
-.name {
-	font-size: 4.25em;
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-}
-
-.bounty {
-	font-size: 2.5em;
-	padding: 0;
-	margin: 0;
-	-webkit-transform:scale(1.0, 0.5);
-	-moz-transform:scale(1.0, 0.5);
-	-ms-transform:scale(1.0, 0.5);
-	-o-transform:scale(1.0, 0.5);
-	transform:scale(1.,0.75);
-}
-
-.bounty:before {
-	/*content: url("images/beli.png");*/
-}
-
-.wanted-status {
-	font-weight: normal;
-	font-size: 2.75em;
-	letter-spacing: 0.5em;
-	padding: 0;
-	margin-bottom: 0;
-}
-
-.wanted-status.grid {
-	letter-spacing: 0.3em;
-}
-
-.crew {
-	font-size: 2em;
-	margin: -.6em;
-	padding: 0;
-	letter-spacing: 0.5em;
-}
-
-.poster {
-	max-width:400px;
-	height: auto;
-	margin-top: 0;
-	border: 2px solid ;
-	box-sizing: border-box;
-}
-
-a  .poster.thumbnail {
-	max-width: 100%;
-	height: auto;
-	padding: 0;
-	opacity: 0.6;
-}
-
-a:hover .poster.thumbnail {
-	opacity: 1;
 }
