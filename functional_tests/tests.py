@@ -3,8 +3,9 @@ from bounties.models import Pirate
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import time
 import re
+import sys
+import time
 
 SEARCH_PLACEHOLDER = 'Search for a pirate...'
 SEARCH_INPUT_TYPE = 'search'
@@ -13,6 +14,23 @@ SEARCH_DATALIST_ID = 'pirate-names'
 HEADER_TEXT = 'WANTED'
 
 class BountiesTest(StaticLiveServerTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        # Check if a staging or production server is specified then use it
+        for arg in sys.argv:
+            if 'liveserver' in arg:
+                cls.server_url = 'http://' + arg.split('=')[1]
+                return
+        # If there's none, setup a test server
+        super(StaticLiveServerTestCase, cls).setUpClass()
+        cls.server_url = cls.live_server_url
+
+    @classmethod
+    def tearDownClass(cls):
+        # Tear down only if we're using a test server
+        if cls.server_url == cls.live_server_url:
+            super().tearDownClass()
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -141,7 +159,7 @@ class BountiesTest(StaticLiveServerTestCase):
     def test_can_search_for_a_pirate_and_see_his_bounty(self):
         # The marines have put up an online billboard for pirate bounties.
         # Coby hears about this and goes to check it out.
-        self.browser.get(self.live_server_url + '/onepiecebounties/')
+        self.browser.get(self.server_url + '/onepiecebounties/')
 
         # He notices the title read "WANTED | Unofficial list of bounties in One Piece"
         self.assertEqual('WANTED | Unofficial list of bounties in One Piece', self.browser.title)
