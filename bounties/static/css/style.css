@@ -61,7 +61,8 @@ header h1 {
 	background: none;
 }
 
-input.form-control,input.form-control:focus {
+input.form-control,
+input.form-control:focus {
     border:none;
     box-shadow: none;
    -webkit-box-shadow: none;
@@ -75,6 +76,7 @@ input.form-control,input.form-control:focus {
 
 span.input-group-addon {
 	border-bottom: 2px solid #39302d;
+	border-radius: 0;
 }
 
 input[type="search"] {
@@ -91,34 +93,10 @@ input[type="search"] {
 
 input[type="search"]:hover, 
 input[type="search"]:focus {
-	border: none;
+	border: 0px;
 	border-bottom: 2px solid #39302d;
 	outline: none;
 }
-
-input[type="search"]::-webkit-input-placeholder, /* Chrome/Safari/Opera */
-input[type="search"]:-moz-placeholder, /* Firefox 18- */
-input[type="search"]::-moz-placeholder,  /* Firefox 19+ */
-input[type="search"]:-ms-input-placeholder {  
-color: white !important;
-}
-
-input[type="submit"].btn-search {
-	background: #615a59;
-	border-radius: 1px;
-	color: #ebe5dd;
-	border: 2px solid #615a59;
-}
-
-input[type="submit"].btn-search:hover {
-	color: #615a59;
-	background: #ebe5dd;
-	-webkit-transition: all 0.30s ease-in-out;
-	-moz-transition: all 0.30s ease-in-out;
-	-ms-transition: all 0.30s ease-in-out;
-	-o-transition: all 0.30s ease-in-out;
-}
-
 
 /* Set properties of list and detail template elements */
 
@@ -152,15 +130,21 @@ a:hover {
 	max-width: 430px;
 }
 
+
 .name {
 	font-size: 4.25em;
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	vertical-align: middle;
 }
 
-.name.grid {
+.grid > .name {
 	font-size: 3.5em;
+}
+
+.solo > .name {
+	margin-top: 0.3em;
 }
 
 .bounty {
@@ -186,13 +170,16 @@ a:hover {
 	margin-bottom: 0;
 }
 
-.wanted-status.grid {
+.solo > .wanted-status {
+	letter-spacing: 0.5em;
+}
+
+.grid > .wanted-status {
 	letter-spacing: 0.3em;
 }
 
 .crew {
 	font-size: 2em;
-	margin: -.6em;
 	padding: 0;
 	letter-spacing: 0.5em;
 }

@@ -13,15 +13,7 @@ input[type="search"] {
 	text-align: center;
 	font-size: 1.6em;
 	color: #322826;
-	padding-top: 10px;
-	margin-left: -1px;
-	margin-right: 20px;
-}
-
-input[type="submit"].btn-search {
-	text-align: center;
-	padding: 8px 20px 2px 20px;
-	margin: 0 7px;
+	margin-right: 50px;
 }
 
 /* Extra Small Devices, Phones */ 
