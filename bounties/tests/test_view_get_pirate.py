@@ -43,12 +43,6 @@ class GetPirateTest(TestCase):
         response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
         self.assertContains(response, pirate.formatted_bounty())
 
-    def test_template_shows_pirate_crew(self):
-        crew = factories.Crew()
-        pirate = factories.Pirate(crew=crew)
-        response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
-        self.assertContains(response, crew.name)
-
     def test_template_has_correct_pirate_image(self):
         pirate = factories.Pirate()
         other_pirate = factories.Pirate(name='Tony Tony Chopper', bounty=100)
@@ -67,7 +61,7 @@ class GetPirateTest(TestCase):
     def test_template_shows_wanted_status(self):
         pirate = factories.Pirate(wanted_status=Pirate.DEAD_OR_ALIVE)
         response = self.client.get(reverse('bounties:get_pirate', kwargs={'pirate_id': pirate.id,}))
-        self.assertContains(response, pirate.get_wanted_status_display())
+        self.assertContains(response, pirate.get_wanted_status_display().upper())
     
     # TODO Find a way to do this
     #def test_view_image_url_is_accessible(self):

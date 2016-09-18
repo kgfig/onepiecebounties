@@ -15,7 +15,7 @@ class ListTemplateTest(TestCase):
         response = self.client.get(reverse('bounties:index'), data={'pirate-search-field':'Boa'})
         
         luffy_url = reverse('bounties:get_pirate', kwargs={'pirate_id': luffy.id,})
-        self.assertNotContains(response, '<a href="%s">%s</a>' % (luffy_url, luffy.name,), html=True)
+        self.assertNotContains(response, '<a href="%s">' % (luffy_url,))
 
     def test_shows_links_to_matching_pirates(self):
         hancock = factories.Pirate(name='Boa Hancock', bounty=None, crew=None)
@@ -24,8 +24,8 @@ class ListTemplateTest(TestCase):
         marigold_url = reverse('bounties:get_pirate', kwargs={'pirate_id': marigold.id,})
         
         response = self.client.get(reverse('bounties:index'), data={'pirate-search-field':'Boa'})
-        self.assertContains(response, '<a href="%s">%s</a>' % (hancock_url, hancock.name,), html=True)
-        self.assertContains(response, '<a href="%s">%s</a>' % (marigold_url, marigold.name,), html=True)
+        self.assertContains(response, '<a href="%s">' % (hancock_url,))
+        self.assertContains(response, '<a href="%s">' % (marigold_url,))
 
     def test_shows_crew_of_matching_pirates(self):
         crew = factories.Crew(name='Kuja Pirates')
@@ -33,24 +33,8 @@ class ListTemplateTest(TestCase):
         marigold = factories.Pirate(name='Boa Marigold', bounty=None, crew=crew)
         
         response = self.client.get(reverse('bounties:index'), data={'pirate-search-field':'Boa'})
-        self.assertContains(response, crew.name)
+        self.assertContains(response, crew.name.upper())
 
-    def test_shows_bounty_of_matching_pirates(self):
-        whitebeard = factories.Crew(name='Whitebeard Pirates')
-        luffy = factories.Pirate(bounty=500000000)
-        ace = factories.Pirate(name='Portgas D. Ace', bounty=None, crew=whitebeard)
-        
-        response = self.client.get(reverse('bounties:index'), data={'pirate-search-field': 'D.'})
-        self.assertContains(response, luffy.formatted_bounty())
-        
-    def test_no_bounty_in_page_if_matching_pirate_has_no_bounty(self):
-        whitebeard = factories.Crew(name='Whitebeard Pirates')
-        pretimeskip_luffy = factories.Pirate(bounty=100000000)
-        ace = factories.Pirate(name='Portgas D. Ace', bounty=None, crew=whitebeard)
-        
-        response = self.client.get(reverse('bounties:index'), data={'pirate-search-field': 'D.'})
-        self.assertNotContains(response, 'None')
-        
     def test_shows_image_of_matching_pirates(self):
         hancock = factories.Pirate(name='Boa Hancock', bounty=None, crew=None)
         marigold = factories.Pirate(name='Boa Marigold', bounty=None, crew=None)
@@ -67,5 +51,5 @@ class ListTemplateTest(TestCase):
         sanji = factories.Pirate(name='Test Sanji', bounty=177000000, crew=crew, wanted_status=Pirate.ONLY_ALIVE)
 
         response = self.client.get(reverse('bounties:index'), data={'pirate-search-field': 'Test'})
-        self.assertContains(response, luffy.get_wanted_status_display())
-        self.assertContains(response, sanji.get_wanted_status_display())
+        self.assertContains(response, luffy.get_wanted_status_display().upper())
+        self.assertContains(response, sanji.get_wanted_status_display().upper())
