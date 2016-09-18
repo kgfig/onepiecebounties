@@ -6,6 +6,12 @@ from selenium.webdriver.common.keys import Keys
 import time
 import re
 
+SEARCH_PLACEHOLDER = 'Search for a pirate...'
+SEARCH_INPUT_TYPE = 'search'
+SEARCH_INPUT_NAME = 'pirate-search-field'
+SEARCH_DATALIST_ID = 'pirate-names'
+HEADER_TEXT = 'WANTED'
+
 class BountiesTest(StaticLiveServerTestCase):
 
     def setUp(self):
@@ -31,10 +37,10 @@ class BountiesTest(StaticLiveServerTestCase):
     def tearDown(self):
         self.browser.quit()
 
-    def _check_header_text(self, header, expected_header_text='WANTED'):
+    def _check_header_text(self, header, expected_header_text=HEADER_TEXT):
         self.assertEqual(expected_header_text, header.text)
 
-    def _check_search_field_attributes(self, inputbox, input_type='search', placeholder_text='Search for a pirate', input_name='pirate-search-field', input_list='pirate-names'):
+    def _check_search_field_attributes(self, inputbox, input_type=SEARCH_INPUT_TYPE, placeholder_text=SEARCH_PLACEHOLDER, input_name=SEARCH_INPUT_NAME, input_list=SEARCH_DATALIST_ID):
         self.assertEqual(input_type, inputbox.get_attribute('type'))
         self.assertEqual(placeholder_text, inputbox.get_attribute('placeholder'))
         self.assertEqual(input_name, inputbox.get_attribute('name'))
@@ -45,10 +51,9 @@ class BountiesTest(StaticLiveServerTestCase):
 
     def _check_pirate_data_in_profile_page_elements(self, pirate):
         name_element = self.browser.find_element_by_class_name('name')
-        self.assertEqual(pirate.name, name_element.text)
+        self.assertEqual(pirate.name.upper(), name_element.text.upper())
 
         self._check_search_result_bounty_class(pirate)
-        self._check_search_result_crew_class(pirate)
         self._check_wanted_status(pirate)
 
         image_element = self.browser.find_element_by_tag_name('img')
@@ -58,13 +63,27 @@ class BountiesTest(StaticLiveServerTestCase):
     def _check_wanted_status(self, pirate):
         if pirate.wanted_status:
             status_elements = self.browser.find_elements_by_class_name('wanted-status')
-            self.assertIn(pirate.get_wanted_status_display(), [element.text for element in status_elements])
-        
+            self.assertIn(pirate.get_wanted_status_display().upper(), [element.text.upper() for element in status_elements])
+        else:
+            pass
+
+    """
+    Returns the first matching <a> tag if the url it points to contains the link to the pirate's profile.
+    Returns None otherwise.
+    """
+    def _find_link_to_profile(self, pirate):
+        pirate_url = '/onepiecebounties/%d/' % (pirate.id,)
+        name_links = self.browser.find_elements_by_tag_name('a')
+        matching_urls = [link_element for link_element in name_links if pirate_url in link_element.get_attribute('href')]
+        return matching_urls[0] if len(matching_urls) > 0 else None
+
+    """
+    Asserts True if a matching <a> is found for this pirate
+    """
     def _check_search_result_name_links(self, pirate):
-        name_link = self.browser.find_element_by_link_text(pirate.name)
-        name_href = name_link.get_attribute('href')
-        pirate_url = '/onepiecebounties/%d+/' % (pirate.id,)
-        self.assertRegex(name_href, pirate_url)
+        pirate_link = self._find_link_to_profile(pirate)
+        name_links = self.browser.find_elements_by_tag_name('a')
+        self.assertIsNotNone(pirate_link, 'No links found for pirate with id=%d' % (pirate.id,))
         
     def _check_search_result_bounty_class(self, pirate):
         if pirate.bounty:
@@ -73,7 +92,7 @@ class BountiesTest(StaticLiveServerTestCase):
 
     def _check_search_result_crew_class(self, pirate):
         crew_elements = self.browser.find_elements_by_class_name('crew')
-        self.assertIn(pirate.crew.name, [element.text for element in crew_elements])
+        self.assertIn(pirate.crew.name.upper(), [element.text.upper() for element in crew_elements])
 
     # TODO improve code in asserting that the filename can be matched
     # (using regex) in one of the image elements' src attribute
@@ -90,17 +109,10 @@ class BountiesTest(StaticLiveServerTestCase):
             
         self.assertTrue(matched, 'Pirate filename %s not found in %s' % (pattern, image.get_attribute('src'),))
 
-    # If there are N pirates who should be in the search results
-    # where M of them have bounties and P of them belong to a crew,
-    # there should be:
-    # N name links
-    # M bounty elements,
-    # N images
-    # and P crew elements.
     def _check_list_in_search_results(self, pirates):
         len_pirates = len(pirates)
-        name_links = self.browser.find_elements_by_class_name('name')
-        self.assertEqual(len(name_links), len_pirates)
+        name_elements = self.browser.find_elements_by_class_name('name')
+        self.assertEqual(len(name_elements), len_pirates)
 
         pirates_with_bounty = [ some_pirate for some_pirate in pirates if some_pirate.bounty ]
         bounty_elements = self.browser.find_elements_by_class_name('bounty') 
@@ -115,7 +127,6 @@ class BountiesTest(StaticLiveServerTestCase):
 
         for pirate in pirates:
             self._check_search_result_name_links(pirate)
-            self._check_search_result_bounty_class(pirate)
             self._check_search_result_crew_class(pirate)
             self._check_wanted_status(pirate)
             self._check_search_result_image_tags(pirate)
@@ -173,10 +184,8 @@ class BountiesTest(StaticLiveServerTestCase):
         inputbox = self.browser.find_element_by_tag_name('input')
         self.assertEqual(self.luffy.name, inputbox.get_attribute('value'))
 
-        # Beside the field is a "Search" button, he clicks on it.
-        self.browser.find_element_by_id('search-button').click()
-        
-        # The page changes.
+        # Again, he hits Enter. The page changes.
+        inputbox.send_keys(Keys.ENTER)
         self.assertRegex(self.browser.current_url, '/onepiecebounties/\d+/')
 
         # He sees the name, bounty, the crew name and photo of his friend on the page.
@@ -186,13 +195,10 @@ class BountiesTest(StaticLiveServerTestCase):
         profile_header = self.browser.find_element_by_tag_name('h1')
         self._check_header_text(profile_header)
 
-        # Near the top-right corner of the page are a search field and a button.
+        # Near the top-right corner of the page is a search field.
         profile_inputbox = self.browser.find_element_by_tag_name('input')
         self._check_search_field_attributes(profile_inputbox)
         
-        profile_search_button = self.browser.find_element_by_id('search-button');
-        self.assertEqual(profile_search_button.get_attribute('value'), 'Search')
-
         profile_datalist = self.browser.find_element_by_tag_name('datalist')
         profile_options = self.browser.find_elements_by_tag_name('option')
         self._check_datalist_exists()
@@ -220,7 +226,8 @@ class BountiesTest(StaticLiveServerTestCase):
         self._check_list_in_search_results([self.hancock, self.sandersonia, self.marigold])
 
         # He clicks on Boa Hancock's name.
-        self.browser.find_element_by_link_text(self.    hancock.name).click()
+        boa_link = self._find_link_to_profile(self.hancock)
+        boa_link.click()
 
         # The page updates.
         new_profile_url = '/onepiecebounties/%d/' % (self.hancock.id,)
